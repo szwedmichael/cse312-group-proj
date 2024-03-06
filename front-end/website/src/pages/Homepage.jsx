@@ -2,12 +2,23 @@ import { useState } from 'react'
 import '../styles/Homepage.css'
 
 function Homepage() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <div className="home-header">
-        <h1>Trips</h1>
+      <div className="home-entirepage">
+        <div className="home-header">
+          <h1>Trips</h1>
+        </div>
+        <div className= "home-login">
+          <form>
+            <button type="submit">Login</button>
+          </form>
+        </div>
+        <div className= "home-signup">
+          <form>
+            <button type="submit">Signup</button>
+          </form>
+        </div>
       </div>
     </>
   )
