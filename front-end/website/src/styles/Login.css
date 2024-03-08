@@ -14,7 +14,7 @@
 }
 
 
-input[type="email"],
+input[type="username"],
 input[type="password"] {
     width: calc(100% - 20px);
     padding: 10px;

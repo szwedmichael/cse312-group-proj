@@ -1,17 +1,16 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import '../styles/Login.css'
-import '../api.js'
+import '../styles/Signup.css'
 import api from '../api.js'
 
-export default function Login() {
+export default function Signup() {
 
     //Necessary for messages relating to sign up, i.e. account already created
     const [signUpErrorMsg, setSignUpErrorMsg] = useState("")
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [rememberMe, setRememberMe] = useState(false);
+    const [password2, setPassword2] = useState("");
 
     const submit = async (event) => {
         event.preventDefault()
@@ -22,11 +21,12 @@ export default function Login() {
         const data = {
             username: username,
             password: password,
+            password2: password2,
             rememberMe: rememberMe
         }
 
         try {
-            await fetch(api.post('/login'), { // url of the Fast API
+            await fetch(api.post('/signup'), { // url of the Fast API
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,11 +48,11 @@ export default function Login() {
     return(
         <div class="text-center">
             <h1>
-                Login
+                Sign up
             </h1>
             <form name="login" action="" onsubmit="" method="post" class="">
                 <div>
-                    <input type="username" id="username" placeholder="Email" onChange={(event) => {
+                    <input type="username" id="username" placeholder="Username" onChange={(event) => {
                         setUsername(event.target.value)
                     }} required class=""/>
                 </div>
@@ -62,19 +62,16 @@ export default function Login() {
                     }} required class=""/>
                 </div>
                 <div>
-                    <input type="checkbox" id="rememberMe" name="rememberMe" onClick={() => {
-                        setRememberMe(!rememberMe)
-                    }}/>
-                    <label for="rememberMe">
-                        Remember Me
-                    </label>
+                    <input type="password2" id="password2" placeholder="Confirm Password" onChange={(event) => {
+                        setPassword2(event.target.value)
+                    }} required class=""/>
                 </div>
                 <div class="mb-2 text-danger">
                     {signUpErrorMsg}
                 </div>
                 <div>
                     <button class="submit w-full" onClick={submit}>
-                        Login
+                        Sign up
                     </button>
                 </div>
             </form>
