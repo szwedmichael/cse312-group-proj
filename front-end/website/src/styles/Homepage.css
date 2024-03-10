@@ -1,0 +1,50 @@
+.home-entirepage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; 
+}
+  
+.home-header {
+    font-size: 75px; 
+    color: #FBF6EE;
+    text-align: center;
+}
+
+.home-login, .home-signup {
+    font-size: 2rem; 
+    margin: 5px 0; 
+}
+
+.login-button, .signup-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #FBF6EE;
+    color: #65B741;
+    text-decoration: none;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    margin-top: px; 
+    font-size: 30px;
+}
+  
+.login-button:hover, .signup-button:hover {
+    background-color: #0056b3;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 600px) {
+    .home-header {
+        font-size: 40px; /* Reduced font size */
+        margin: 15px 0; /* Adjusted margin */
+    }
+    .home-login, .home-signup {
+        font-size: 1.5rem; /* Reduced font size */
+        margin: 15px 0; /* Adjusted margin */
+    }
+    .login-button, .signup-button {
+        font-size: 20px; /* Reduced font size */
+    }
+}
