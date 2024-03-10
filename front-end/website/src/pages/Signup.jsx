@@ -22,7 +22,6 @@ export default function Signup() {
             username: username,
             password: password,
             password2: password2,
-            rememberMe: rememberMe
         }
 
         try {
