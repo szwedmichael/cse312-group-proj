@@ -4,6 +4,7 @@ from app.services.example import ExampleService
 router = APIRouter()
 
 
-@router.get("/example")
+@router.get("/signup")
 async def example(service: ExampleService = Depends(ExampleService)):
-    return service.do_something_in_service()
+    return
+    # return service.do_something_in_service()
