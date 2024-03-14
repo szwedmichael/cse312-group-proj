@@ -41,10 +41,10 @@ class ManagePostService:
         likes=len(users_liked)
         #Set list of users and number of likes
         self.post_collection.update_one(
-            {"id":post_id, "$set":{"users_liked":users_liked, "likes":likes}}
+            {"id":post_id}, {"$set":{"users_liked":users_liked, "likes":likes}}
             )
         
-        return {"likes":likes}
+        return {"post_id":post_id, "likes":likes, "like_status":True}
 
 
     def unlikePost(self, post_id, auth_token):
@@ -69,9 +69,10 @@ class ManagePostService:
         likes=len(users_liked)
         #Update users liked and number of likes
         self.post_collection.update_one(
-            {"id":post_id, "$set":{"users_liked":users_liked, "likes":likes}}
+            {"id":post_id}, {"$set":{"users_liked":users_liked, "likes":likes}}
             )
-        return {"likes":likes}
+        
+        return {"post_id": post_id, "likes":likes, "like_status":False}
         
 
     def validUser(self,auth_token):
