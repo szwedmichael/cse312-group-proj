@@ -1,5 +1,7 @@
 #File for managaing posts to the server
 import hashlib
+import html
+import uuid
 from fastapi import HTTPException, Depends
 from app.core.database import MongoDataBase
 
@@ -10,11 +12,36 @@ class ManagePostService:
         self.credentials_collection = mongo_database.get_collection("credentials")
         self.post_collection = mongo_database.get_collection("posts")
 
-    def addPost(self):
-        #THINGS TO KEEP IN MIND
-        #create a unique id for each post
-        #keep track of who posted it
-        pass
+    #body contains something like: {"location": "Buffalo, NY", "description": "I went to Niagara Falls and it was awesome", "date": MM/YYYY, "xsrf":xsrf}
+    def addPost(self, authToken, body):
+        #Verify user exists
+        validUser = self.validUser(authToken)
+        if not validUser:
+            return HTTPException(status_code=404, detail="Invalid User")
+        
+        #Obtains username and creates an id for the post
+        user = self.credentials_collection.find_one({"hashed_auth":validUser})
+        username = user["username"]
+        post_id = uuid.uuid4()
+
+        #Obtains XSRF tokens
+        userXSRF = user["xsrf"]
+        htmlXSRF = body["xsrf"]
+
+        #Verifies XSRF tokens
+        if userXSRF != htmlXSRF:
+            return HTTPException(status_code=403, detail="Post Rejected!")
+
+        #HTML escape any message from user
+        location = html.escape(body["location"])
+        description = html.escape(body["description"])
+        date = html.escape(body["date"])
+
+        #Insert content into database
+        content = {"username":username, "id":post_id, "content":{"location":location, "description":description, "date":date}}
+        self.post_collection.insert_one(content)
+
+        return content
 
     def likePost(self, post_id, auth_token):
         #Get post document
