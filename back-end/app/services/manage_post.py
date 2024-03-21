@@ -12,7 +12,7 @@ class ManagePostService:
 
     def addPost(self):
         #THINGS TO KEEP IN MIND
-        #inserted line
+        #deleted line
         #create a unique id for each post
         #keep track of who posted it
         pass
