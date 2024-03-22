@@ -1,10 +1,16 @@
 import { useState, useEffect } from 'react';
 import api from '../api.js';
+import '../styles/HomepageLogged.css'
 
 function HomepageLogged() {
 
     const [userName, setUserName] = useState('');
-    const [posts, setPosts] = useState([]);
+    // some mock posts
+    const [posts, setPosts] = useState([
+        { id: 1, username: "yolo12", location: 'Buffalo, NY', description: 'i love it here !!!!', date: '03/2024' },
+        { id: 2, username: "ohboy", location: 'New York, NY', description: 'Boston is better ;)', date: '03/2024' },
+        { id: 3, username: "sofun", location: 'Los Angeles, CA', description: 'What happend to this place', date: '03/2024' },
+    ]);
 
     useEffect(() => {
 
@@ -34,7 +40,17 @@ function HomepageLogged() {
 
         fetchUserDetails();
         fetchPosts();
-        }, []);
+    }, []);
+
+    const logout = async (event) => {
+        event.preventDefault();
+        try {
+            await api.post('/logout', { withCredentials: true });
+            window.location.href = '/';
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    }
 
     // posts {"location": "Buffalo, NY", "description": "I went to Niagara Falls and it was awesome", "date": MM/YYYY, "xsrf":xsrf}
     return (
@@ -42,13 +58,18 @@ function HomepageLogged() {
         <div className='homepage-welcome'>
             <h1>Welcome, {userName}!</h1>
         </div>
-        <div className='homepage-posts'>
-            <h2>Posts</h2>
+        <div className='homepage-logout'>
+            <button onClick={logout}>Logout</button>
+        </div>
+        <div className='homepage-all-posts'>
+            <h1>Posts</h1>
             <ul>
                 {posts.map((post) => (
-                    <li key={post.id}>
-                        <h3>{post.location}</h3>
-                        <p>{post.description0}</p>
+                    <li key={post.id} className='post'>
+                        <h2>{post.username}</h2>
+                        <h4>{post.location}</h4>
+                        <p>{post.description}</p>
+                        <div className='post-date'>{post.date}</div>
                     </li>
                 ))}
             </ul>
