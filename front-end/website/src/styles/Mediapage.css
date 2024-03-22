@@ -1,0 +1,13 @@
+.media-entirepage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; 
+}
+  
+.media-header {
+    font-size: 75px; 
+    color: #FBF6EE;
+    text-align: center;
+}
