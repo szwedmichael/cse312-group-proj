@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import '../styles/Homepage.css'
-// import React from 'react';
 import vacationImage from '../images/red-m&m.png';
 
 function Homepage() {
