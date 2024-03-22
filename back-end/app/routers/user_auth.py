@@ -6,7 +6,7 @@ router = APIRouter()
 
 
 @router.post("/login")
-async def logic(
+async def login(
     user_login_info: LoginModel, user_auth_service: UserAuthService = Depends()
 ):
     return user_auth_service.loginUser(
