@@ -44,3 +44,20 @@
     font-size: 0.8rem;
     margin-top: 10px;
 }
+
+.like-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.like-section img {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.like-count {
+    font-size: 16px;
+}
