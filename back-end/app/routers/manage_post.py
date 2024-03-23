@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from app.services.manage_post import ManagePostService
 from app.models.manage_post import AddPostModel, PostInteractionModel
 
+
 router = APIRouter()
 
 

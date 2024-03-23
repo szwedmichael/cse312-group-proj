@@ -2,9 +2,28 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import user_auth
+from fastapi.templating import Jinja2Templates
+from fastapi.requests import Request
 
 
 app = FastAPI()
+
+
+# https://stackoverflow.com/questions/62928450/how-to-put-backend-and-frontend-together-returning-react-frontend-from-fastapi
+# Sets the templates directory to the `build` folder from `npm run build`
+# this is where you'll find the index.html file.
+dist_dir = "../front-end/website/dist"
+templates = Jinja2Templates(directory=dist_dir)
+# Mounts the `static` folder within the `build` folder to the `/static` route.
+app.mount("/static", StaticFiles(directory=f"{dist_dir}/static"), name="static")
+
+
+# Defines a route handler for `/*` essentially.
+# NOTE: this needs to be the last route defined b/c it's a catch all route
+@app.get("/{rest_of_path:path}")
+async def react_app(req: Request, rest_of_path: str):
+    return templates.TemplateResponse("index.html", {"request": req})
+
 
 # Set CORS
 app.add_middleware(
@@ -16,10 +35,3 @@ app.add_middleware(
 )
 
 app.include_router(user_auth.router)
-
-
-# https://stackoverflow.com/questions/65916537/a-minimal-fastapi-example-loading-index-html
-# https://stackoverflow.com/questions/73911250/how-to-render-css-js-images-along-with-html-file-in-fastapi
-app.mount(
-    "/", StaticFiles(directory="../front-end/website/dist", html=True), name="static"
-)
