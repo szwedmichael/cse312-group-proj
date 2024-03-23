@@ -6,4 +6,8 @@ cd into its-mm/front-end/website
 
 Run "npm i" in console
 
-Run "npm run dev"
+Run "npm run dev" to see frontend dev server
+
+# Building
+
+Run "npm run build" to build dist folder for production
