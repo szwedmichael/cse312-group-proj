@@ -3,6 +3,19 @@ import api from '../api.js';
 import '../styles/HomepageLogged.css'
 import likeButton from '../images/like-button.png';
 
+/*
+This is the homepage for a logged in user
+It is located at /home
+
+DONE:
+- get request for username
+- get request for posts
+- logout
+- like or unlike post
+
+NOT DONE:
+- post request for posts (creating posts)
+*/
 function HomepageLogged() {
 
     const [userName, setUserName] = useState('');

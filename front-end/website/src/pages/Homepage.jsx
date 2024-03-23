@@ -42,12 +42,12 @@ function Homepage() {
         </div>
         <div className="home-login">
           <form>
-            <a href="http://localhost:5173/login" className="login-button">Login</a>
+            <a href="http://127.0.0.1:8000/login" className="login-button">Login</a>
           </form>
         </div>
         <div className="home-signup">
           <form>
-            <a href="http://localhost:5173/signup" className="signup-button">Sign up</a>
+            <a href="http://127.0.0.1:8000/signup" className="signup-button">Sign up</a>
           </form>
         </div>
       </>
