@@ -8,8 +8,10 @@ import Homepage from './pages/Homepage.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import Mediapage from './pages/Mediapage.jsx'
+import HomepageLogged from './pages/HomepageLogged.jsx'
 // styles
 import './styles/index.css'
+
 
 
 
@@ -22,6 +24,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route exact path="/login" Component={Login} />
         <Route exact path="/signup" Component={Signup} />
         <Route exact path="/mediapage" Component={Mediapage} />
+        <Route exact path="/home" Component={HomepageLogged} />
       </Routes>
     </Router>
   </React.StrictMode>,
