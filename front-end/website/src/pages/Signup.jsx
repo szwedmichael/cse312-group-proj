@@ -73,7 +73,7 @@ export default function Signup() {
         </div>
         <div>
           <input
-            type="password2"
+            type="password"
             id="password2"
             placeholder="Confirm Password"
             onChange={(event) => {
