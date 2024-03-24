@@ -16,7 +16,7 @@ class ManagePostService:
         self.post_collection = mongo_database.get_collection("posts")
 
     # body contains something like: {"location": "Buffalo, NY", "description": "I went to Niagara Falls and it was awesome", "date": MM/YYYY, "xsrf":xsrf}
-    def addPost(self,  htmlXSRF, body, authToken: str):
+    def addPost(self, htmlXSRF, body, authToken:str):
         # Verify user exists
         validUser = self.validUser(authToken)
         if not validUser:
