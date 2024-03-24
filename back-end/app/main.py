@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import user_auth
+from .routers import user_auth, manage_post, homepage
 from fastapi.templating import Jinja2Templates
 from fastapi.requests import Request
 
@@ -35,3 +35,5 @@ app.add_middleware(
 )
 
 app.include_router(user_auth.router)
+app.include_router(manage_post.router)
+app.include_router(homepage.router)

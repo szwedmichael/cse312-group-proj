@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Cookie
 from app.services.user_auth import UserAuthService
 from app.models.user_auth import LoginModel, SignupModel
+from typing import Union
 
 router = APIRouter()
 
@@ -26,6 +27,10 @@ async def signup(
 
 
 @router.post("/logout")
-async def logout(user_auth_service: UserAuthService = Depends()):
-    EXTRACTED_AUTH_COOKIE = None
-    return user_auth_service.logoutUser(EXTRACTED_AUTH_COOKIE)
+async def logout(
+    user_auth_service: UserAuthService = Depends(),
+    auth_token: Union[str, None] = Cookie(None),
+):
+    return user_auth_service.logoutUser(auth_token)
+
+

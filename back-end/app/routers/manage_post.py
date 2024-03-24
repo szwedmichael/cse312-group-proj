@@ -1,17 +1,19 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Cookie
 from app.services.manage_post import ManagePostService
 from app.models.manage_post import AddPostModel, PostInteractionModel
-
+from typing import Union
 
 router = APIRouter()
 
 
 @router.post("/add-post")
 async def add_post(
-    add_post_info: AddPostModel, manage_post_service: ManagePostService = Depends()
+    add_post_info: AddPostModel,
+    manage_post_service: ManagePostService = Depends(),
+    auth_token: Union[str, None] = Cookie(None),
 ):
     return manage_post_service.addPost(
-        add_post_info.authToken, add_post_info.xsrf, add_post_info.post
+        add_post_info.authToken, add_post_info.xsrf, add_post_info.post, auth_token
     )
 
 
@@ -19,21 +21,20 @@ async def add_post(
 async def like_post(
     like_post_info: PostInteractionModel,
     manage_post_service: ManagePostService = Depends(),
+    auth_token: Union[str, None] = Cookie(None),
 ):
-    return manage_post_service.likePost(
-        like_post_info.post_id,
-        like_post_info.authToken,
-    )
+    return manage_post_service.likePost(like_post_info.post_id, auth_token)
 
 
 @router.post("/unlike-post")
 async def unlike_post(
     unlike_post_info: PostInteractionModel,
     manage_post_service: ManagePostService = Depends(),
+    auth_token: Union[str, None] = Cookie(None),
 ):
     return manage_post_service.unlikePost(
         unlike_post_info.post_id,
-        unlike_post_info.authToken,
+        auth_token,
     )
 
 

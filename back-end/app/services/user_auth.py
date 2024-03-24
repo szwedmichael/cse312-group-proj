@@ -3,7 +3,6 @@ import bcrypt
 import hashlib
 import secrets
 import uuid
-from fastapi.security import HTTPCookie
 from fastapi.responses import RedirectResponse
 from fastapi import HTTPException, Depends
 from app.core.database import MongoDataBase
@@ -64,39 +63,47 @@ class UserAuthService:
 
     # TODO Add password requirements
 
-    #Login user based on valid credentials
+    # Login user based on valid credentials
     def loginUser(self, username, password):
         allUsers = self.credentials_collection.find()
 
-        #Insert authToken to a user who matches username and password
+        # Insert authToken to a user who matches username and password
         for user in allUsers:
 
-            #Match the username
+            # Match the username
             if username == user["username"]:
                 matchedPasswords = bcrypt.checkpw(password.encode(), user["password"])
 
-                #Match passwords
+                # Match passwords
                 if matchedPasswords:
 
-                    #Generate random authToken, and get the hash of the authToken
+                    # Generate random authToken, and get the hash of the authToken
                     authTokenValue = uuid.uuid4()
                     authToken = str(authTokenValue)
                     hashedAuthToken = hashlib.sha256(authToken.encode()).hexdigest()
 
-                    #Update user profile in database with hashed_auth token
-                    newContent = {"username":username, "password":user["password"], "salt": user["salt"], "xsrf":user["xsrf"], "hashed_auth":hashedAuthToken,}
+                    # Update user profile in database with hashed_auth token
+                    newContent = {
+                        "username": username,
+                        "password": user["password"],
+                        "salt": user["salt"],
+                        "xsrf": user["xsrf"],
+                        "hashed_auth": hashedAuthToken,
+                    }
                     self.credentials_collection.delete_one(user)
                     self.credentials_collection.insert_one(newContent)
 
-                    #Redirect user back to home page with the set auth_token cookie
+                    # Redirect user back to home page with the set auth_token cookie
                     returnResponse = RedirectResponse(url="/", status_code=302)
-                    returnResponse.set_cookie("auth_token", authToken, max_age = 4000, http_only = True)
+                    returnResponse.set_cookie(
+                        "auth_token", authToken, max_age=4000, http_only=True
+                    )
                     return returnResponse
-        
-        #Any invalid login request will have a 403 response with invalid credentials        
+
+        # Any invalid login request will have a 403 response with invalid credentials
         return HTTPException(status_code=403, detail="Invalid credentials")
 
-    def logoutUser(self, auth_token: str = HTTPCookie(alias="auth_token")):
+    def logoutUser(self, auth_token: str):
         # check if auth token is not None
         if auth_token:
             # Hash auth
