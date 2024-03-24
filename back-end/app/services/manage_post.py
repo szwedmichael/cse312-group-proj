@@ -3,6 +3,7 @@ import hashlib
 import html
 import uuid
 from fastapi import HTTPException, Depends
+from fastapi.security import HTTPCookie
 from app.core.database import MongoDataBase
 
 
@@ -14,7 +15,7 @@ class ManagePostService:
         self.post_collection = mongo_database.get_collection("posts")
 
     # body contains something like: {"location": "Buffalo, NY", "description": "I went to Niagara Falls and it was awesome", "date": MM/YYYY, "xsrf":xsrf}
-    def addPost(self, authToken, htmlXSRF, body):
+    def addPost(self,  htmlXSRF, body, authToken: str = HTTPCookie(alias="auth_token")):
         # Verify user exists
         validUser = self.validUser(authToken)
         if not validUser:
@@ -48,7 +49,7 @@ class ManagePostService:
 
         return content
 
-    def likePost(self, post_id, auth_token):
+    def likePost(self, post_id, auth_token:str = HTTPCookie(alias="auth_token")):
         # Get post document
         post_document = self.post_collection.find_one({"id": post_id})
         # Check if it exists
@@ -78,7 +79,7 @@ class ManagePostService:
 
         return {"post_id": post_id, "likes": likes, "like_status": True}
 
-    def unlikePost(self, post_id, auth_token):
+    def unlikePost(self, post_id, auth_token:str=HTTPCookie(alias="auth_token")):
         # Get post document
         post_document = self.post_collection.find_one({"id": post_id})
         # Check if it exists
