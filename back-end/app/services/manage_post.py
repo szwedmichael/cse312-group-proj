@@ -15,7 +15,7 @@ class ManagePostService:
         self.post_collection = mongo_database.get_collection("posts")
 
     # body contains something like: {"location": "Buffalo, NY", "description": "I went to Niagara Falls and it was awesome", "date": MM/YYYY, "xsrf":xsrf}
-    def addPost(self, htmlXSRF, body, authToken:str):
+    def addPost(self, htmlXSRF, body, authToken: str):
         # Verify user exists
         validUser = self.validUser(authToken)
         if not validUser:
@@ -44,13 +44,13 @@ class ManagePostService:
             "username": username,
             "id": post_id,
             "content": {"location": location, "description": description, "date": date},
-            "likes":0
+            "likes": 0,
         }
         self.post_collection.insert_one(content)
 
         return content
 
-    def likePost(self, post_id, auth_token:str):
+    def likePost(self, post_id, auth_token: str):
         # Get post document
         post_document = self.post_collection.find_one({"id": post_id})
         # Check if it exists
@@ -80,7 +80,7 @@ class ManagePostService:
 
         return {"post_id": post_id, "likes": likes, "like_status": True}
 
-    def unlikePost(self, post_id, auth_token:str):
+    def unlikePost(self, post_id, auth_token: str):
         # Get post document
         post_document = self.post_collection.find_one({"id": post_id})
         # Check if it exists
@@ -114,21 +114,18 @@ class ManagePostService:
             return self.credentials_collection.find_one({"hashed_auth": hashed_auth})
         # Else return None
         return None
-    
-    def listPost(self):
-        all_post=self.post_collection.find({})
-        post_list=[]
+
+    def listPosts(self):
+        all_post = self.post_collection.find({})
+        post_list = []
 
         for post in all_post:
-            info={}
-            info["usernmae"]=post["username"]
-            info["id"]=post["id"]
-            info["content"]=post["content"]
-            info["likes"]=post["likes"]
+            info = {}
+            info["usernmae"] = post["username"]
+            info["id"] = post["id"]
+            info["content"] = post["content"]
+            info["likes"] = post["likes"]
             post_list.append(info)
 
-        json_list=json.dumps(post_list)
+        json_list = json.dumps(post_list)
         return json_list
-        
-
-

@@ -49,7 +49,4 @@ async def all_posts(
     response: Response, manage_post_service: ManagePostService = Depends()
 ):
     response.headers["X-Content-Type-Options"] = "nosniff"
-    # TODO: use function made to list
-    # return manage_post_service.listPosts(
-    # )
-    return
+    return manage_post_service.listPosts()
