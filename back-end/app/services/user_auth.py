@@ -3,6 +3,7 @@ import bcrypt
 import hashlib
 import secrets
 import uuid
+from fastapi.security import HTTPCookie
 from fastapi.responses import RedirectResponse
 from fastapi import HTTPException, Depends
 from app.core.database import MongoDataBase
@@ -95,7 +96,7 @@ class UserAuthService:
         #Any invalid login request will have a 403 response with invalid credentials        
         return HTTPException(status_code=403, detail="Invalid credentials")
 
-    def logoutUser(self, auth_token):
+    def logoutUser(self, auth_token: str = HTTPCookie(alias="auth_token")):
         # check if auth token is not None
         if auth_token:
             # Hash auth
