@@ -1,9 +1,10 @@
+# frontend
 FROM node:20
 WORKDIR /front-end/website
-COPY website/ .
+COPY . .
 RUN npm install
 RUN npm run build
-
+# backend
 FROM python:3.8
 WORKDIR /back-end
 COPY . .
