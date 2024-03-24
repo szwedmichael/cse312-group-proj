@@ -10,7 +10,6 @@ export default function Login() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
 
   const submit = async (event) => {
     event.preventDefault();
@@ -21,7 +20,6 @@ export default function Login() {
     const data = {
       username: username,
       password: password,
-      rememberMe: rememberMe,
     };
 
     try {
@@ -67,17 +65,6 @@ export default function Login() {
             required
             class=""
           />
-        </div>
-        <div>
-          <input
-            type="checkbox"
-            id="rememberMe"
-            name="rememberMe"
-            onClick={() => {
-              setRememberMe(!rememberMe);
-            }}
-          />
-          <label for="rememberMe">Remember Me</label>
         </div>
         <div class="mb-2 text-danger">{signUpErrorMsg}</div>
         <div>
