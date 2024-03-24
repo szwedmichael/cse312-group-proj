@@ -13,18 +13,26 @@ DONE:
 - logout
 - like or unlike post
 
-NOT DONE:
+IN PROGRESS:
 - post request for posts (creating posts)
+- authentication tokens ($$$)
 */
 function HomepageLogged() {
 
     const [userName, setUserName] = useState('');
+
+    // authToken still needs to be added ($$$)
+    // const [authToken, setAuthToken] = useState(' ');
+
     // some mock posts
     const [posts, setPosts] = useState([
         { id: 1, username: "yolo12", location: 'Buffalo, NY', description: 'i love it here !!!!', date: '03/2024', likes: 12},
         { id: 2, username: "ohboy", location: 'New York, NY', description: 'Boston is better ;)', date: '03/2024', likes: 20 },
         { id: 3, username: "sofun", location: 'Los Angeles, CA', description: 'What happend to this place', date: '03/2024', likes: 5 },
     ]);
+
+    // new post
+    const [newPost, setNewPost] = useState({ location: '', description: '', date: '' });
 
     useEffect(() => {
 
@@ -71,6 +79,8 @@ function HomepageLogged() {
     const likePost = async (postId) => {
         const data = {
             post_id: postId,
+            // authToken still needs to be added ($$$)
+            // authToken: authToken,
         }
         const updatedPosts = posts.map(post => {
             if (post.id === postId) {
@@ -94,36 +104,90 @@ function HomepageLogged() {
         }
     };
 
+    // resets values after pressing post button
+    const postReset = (event) => {
+        const { name, value } = event.target;
+        setNewPost({ ...newPost, [name]: value });
+    };
+
+    const handlePost = async (event) => {
+        event.preventDefault();
+        const postData = {
+            // authToken still needs to be added ($$$)
+            // authToken: authToken,
+            post: newPost,
+        };
+        try {
+            const response = await api.post('/add-post', newPost, { withCredentials: true });
+            const createdPost = response.data;
+            setPosts([createdPost, ...posts]); 
+            setNewPost({ location: '', description: '', date: '' }); 
+        } catch (error) {
+            console.error('Error creating post:', error);
+        }
+    };
+
     // posts {"location": "Buffalo, NY", "description": "I went to Niagara Falls and it was awesome", "date": MM/YYYY, "xsrf":xsrf}
     return (
         <>
-        <div className='homepage-welcome'>
-            <h1>Welcome, {userName}!</h1>
-        </div>
-        <div className='homepage-logout'>
-            <button onClick={logout}>Logout</button>
-        </div>
-        <div className='homepage-all-posts'>
-            <h1>Posts</h1>
-            <ul>
-                {posts.map((post) => (
-                    <li key={post.id} className='post'>
-                        <h2>{post.username}</h2>
-                        <h4>{post.location}</h4>
-                        <p>{post.description}</p>
-                        <div className='post-date'>{post.date}</div>
-                        <div className='like-section'>
-                            <img src={likeButton} alt="Like" onClick={(event) => likePost(post.id, event)}/>
-                            <span className='like-count'>{post.likes}</span>
-                        </div>
-                    </li>
-
-                ))}
-            </ul>
-        </div>
+            <div className='homepage-welcome'>
+                <h1>Welcome, {userName}!</h1>
+            </div>
+            <div className='homepage-logout'>
+                <button onClick={logout}>Logout</button>
+            </div>
+            <div className='homepage-new-post'>
+                <h2>Create New Post</h2>
+                <form onSubmit={handlePost}>
+                    <label>
+                        Location:
+                        <input
+                            type="text"
+                            name="location"
+                            value={newPost.location}
+                            onChange={postReset}
+                            placeholder="Enter your location here..."
+                        />
+                    </label>
+                    <label>
+                        Description:
+                        <textarea
+                            name="description"
+                            value={newPost.description}
+                            onChange={postReset}
+                            placeholder="Enter your description here..."
+                        />
+                    </label>
+                    <label>
+                        Date:
+                        <input
+                            type="text"
+                            name="date"
+                            value={newPost.date}
+                            onChange={postReset}
+                            placeholder="MM/YYYY"
+                        />
+                    </label>
+                    <button type="submit">Post</button>
+                </form>
+            </div>
+            <div className='homepage-all-posts'>
+                <h1>Posts</h1>
+                <ul>
+                    {posts.map((post) => (
+                        <li key={post.id} className='post'>
+                            <h2>{post.username}</h2>
+                            <h4>{post.location}</h4>
+                            <p>{post.description}</p>
+                            <div className='post-date'>{post.date}</div>
+                            <div className='like-section'>
+                                <img src={likeButton} alt="Like" onClick={() => likePost(post.id)} />
+                                <span className='like-count'>{post.likes}</span>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </>
-
     );
-}
-
-export default HomepageLogged;
+} export default HomepageLogged;
