@@ -8,11 +8,6 @@ from fastapi import HTTPException, Depends
 from app.core.database import MongoDataBase
 
 
-# TODO: add nosniff to fastapi responses
-CRLF = "\r\n"
-nosniff = "X-Content-Type-Options: nosniff" + CRLF + CRLF
-
-
 class UserAuthService:
     def __init__(self, mongo_database: MongoDataBase = Depends()):
         self.db = mongo_database.db

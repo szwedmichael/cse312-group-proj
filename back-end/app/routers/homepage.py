@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, Cookie, Response
+from fastapi import APIRouter, Depends, Cookie
+from fastapi.responses import JSONResponse, Response
 from app.services.homepage import HomepageService
 from typing import Union
 
