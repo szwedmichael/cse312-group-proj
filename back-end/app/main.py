@@ -14,8 +14,8 @@ app = FastAPI()
 # this is where you'll find the index.html file.
 dist_dir = "../front-end/website/dist"
 templates = Jinja2Templates(directory=dist_dir)
-# Mounts the `static` folder within the `build` folder to the `/static` route.
-app.mount("/static", StaticFiles(directory=f"{dist_dir}/static"), name="static")
+# Mounts the `assets` folder within the `build` folder to the `/assets` route.
+app.mount("/assets", StaticFiles(directory=f"{dist_dir}/assets"), name="assets")
 
 
 # Defines a route handler for `/*` essentially.

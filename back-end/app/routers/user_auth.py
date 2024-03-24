@@ -23,3 +23,9 @@ async def signup(
         user_signup_info.password,
         user_signup_info.passwordConfirmation,
     )
+
+
+@router.post("/logout")
+async def logout(user_auth_service: UserAuthService = Depends()):
+    EXTRACTED_AUTH_COOKIE = None
+    return user_auth_service.logoutUser(EXTRACTED_AUTH_COOKIE)
