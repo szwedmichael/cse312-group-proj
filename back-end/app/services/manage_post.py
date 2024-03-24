@@ -4,7 +4,6 @@ import html
 import uuid
 import json
 from fastapi import HTTPException, Depends
-from fastapi.security import HTTPCookie
 from app.core.database import MongoDataBase
 
 
