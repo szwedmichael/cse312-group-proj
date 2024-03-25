@@ -21,32 +21,7 @@ function HomepageLogged() {
   const [userName, setUserName] = useState("");
 
   // some mock posts
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      username: "yolo12",
-      location: "Buffalo, NY",
-      description: "i love it here !!!!",
-      date: "03/2024",
-      likes: 12,
-    },
-    {
-      id: 2,
-      username: "ohboy",
-      location: "New York, NY",
-      description: "Boston is better ;)",
-      date: "03/2024",
-      likes: 20,
-    },
-    {
-      id: 3,
-      username: "sofun",
-      location: "Los Angeles, CA",
-      description: "What happend to this place",
-      date: "03/2024",
-      likes: 5,
-    },
-  ]);
+  const [posts, setPosts] = useState([]);
 
   // new post
   const [newPost, setNewPost] = useState({
@@ -74,10 +49,7 @@ function HomepageLogged() {
     const fetchPosts = async () => {
       try {
         const response = await api.get("/all-posts", { withCredentials: true });
-        console.log(response);
-        console.log(response.data);
         if (response.status === 200) {
-          console.log("cool");
           setPosts(response.data);
         }
       } catch (error) {
@@ -203,9 +175,9 @@ function HomepageLogged() {
           {posts.map((post) => (
             <li key={post.id} className="post">
               <h2>{post.username}</h2>
-              <h4>{post.location}</h4>
-              <p>{post.description}</p>
-              <div className="post-date">{post.date}</div>
+              <h4>{post.content.location}</h4>
+              <p>{post.content.description}</p>
+              <div className="post-date">{post.content.date}</div>
               <div className="like-section">
                 <img
                   src={likeButton}
