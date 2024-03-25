@@ -33,13 +33,13 @@ class UserAuthService:
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(password.encode(), salt)
         # Create XSRF token
-        xsrf = secrets.token_hex(32)
+        # xsrf = secrets.token_hex(32)
         # Create dictionaty to insert into database
         to_insert = {}
         to_insert["username"] = username
         to_insert["hashed_password"] = hashed_password
         to_insert["salt"] = salt
-        to_insert["xsrf"] = xsrf
+        # to_insert["xsrf"] = xsrf
 
         # Insert credentials
         self.credentials_collection.insert_one(to_insert)
@@ -83,7 +83,7 @@ class UserAuthService:
                         "username": username,
                         "hashed_password": user["hashed_password"],
                         "salt": user["salt"],
-                        "xsrf": user["xsrf"],
+                        # "xsrf": user["xsrf"],
                         "hashed_auth": hashedAuthToken,
                     }
                     self.credentials_collection.delete_one(user)
