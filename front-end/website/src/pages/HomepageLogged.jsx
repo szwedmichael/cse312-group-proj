@@ -21,9 +21,6 @@ function HomepageLogged() {
 
     const [userName, setUserName] = useState('');
 
-    // authToken still needs to be added ($$$)
-    // const [authToken, setAuthToken] = useState(' ');
-
     // some mock posts
     const [posts, setPosts] = useState([
         { id: 1, username: "yolo12", location: 'Buffalo, NY', description: 'i love it here !!!!', date: '03/2024', likes: 12},
@@ -79,8 +76,6 @@ function HomepageLogged() {
     const likePost = async (postId) => {
         const data = {
             post_id: postId,
-            // authToken still needs to be added ($$$)
-            // authToken: authToken,
         }
         const updatedPosts = posts.map(post => {
             if (post.id === postId) {
@@ -113,8 +108,6 @@ function HomepageLogged() {
     const handlePost = async (event) => {
         event.preventDefault();
         const postData = {
-            // authToken still needs to be added ($$$)
-            // authToken: authToken,
             post: newPost,
         };
         try {
@@ -127,7 +120,7 @@ function HomepageLogged() {
         }
     };
 
-    // posts {"location": "Buffalo, NY", "description": "I went to Niagara Falls and it was awesome", "date": MM/YYYY, "xsrf":xsrf}
+    // posts {"location": "Buffalo, NY", "description": "I went to Niagara Falls and it was awesome", "date": MM/YYYY}
     return (
         <>
             <div className='homepage-welcome'>
@@ -152,6 +145,7 @@ function HomepageLogged() {
                     <label>
                         Description:
                         <textarea
+                            type="text"
                             name="description"
                             value={newPost.description}
                             onChange={postReset}

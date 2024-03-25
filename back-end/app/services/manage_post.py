@@ -19,7 +19,7 @@ class ManagePostService:
         # Verify user exists
         validUser = self.validUser(authToken)
         if not validUser:
-            return HTTPException(status_code=404, detail="Invalid User")
+            raise HTTPException(status_code=404, detail="Invalid User")
 
         # Obtains username and creates an id for the post
         hashed_auth = validUser["hashed_auth"]
@@ -56,11 +56,11 @@ class ManagePostService:
         post_document = self.post_collection.find_one({"id": post_id})
         # Check if it exists
         if not post_document:
-            return HTTPException(status_code=404, detail="Post Does Not Exists")
+            raise HTTPException(status_code=404, detail="Post Does Not Exists")
         # Check if valid user
         user = self.validUser(auth_token)
         if not user:
-            return HTTPException(status_code=404, detail="Invalid User")
+            raise HTTPException(status_code=404, detail="Invalid User")
         username = user["username"]
         # Check if list of users who interacted already exists
         if "users_liked" in post_document:
@@ -86,19 +86,19 @@ class ManagePostService:
         post_document = self.post_collection.find_one({"id": post_id})
         # Check if it exists
         if not post_document:
-            return HTTPException(status_code=404, detail="Post Does Not Exists")
+            raise HTTPException(status_code=404, detail="Post Does Not Exists")
         # Check if valid user
         user = self.validUser(auth_token)
         if not user:
-            return HTTPException(status_code=404, detail="Invalid User")
+            raise HTTPException(status_code=404, detail="Invalid User")
         username = user["username"]
         # Should never be able to unlike a post without any likes
         if "users_liked" not in post_document:
-            return HTTPException(status_code=403, detail="There are Already Zero Likes")
+            raise HTTPException(status_code=403, detail="There are Already Zero Likes")
         users_liked = post_document["users_liked"]
         # Exception if user is not in liked list
         if username not in users_liked:
-            return HTTPException(status_code=404, detail="User Never Liked")
+            raise HTTPException(status_code=404, detail="User Never Liked")
         users_liked.remove(username)
         likes = len(users_liked)
         # Update users liked and number of likes

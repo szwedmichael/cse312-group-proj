@@ -17,17 +17,17 @@ class UserAuthService:
     def registerUser(self, username, password1, password2):
         # Make sure passwords match
         if password1 != password2:
-            return HTTPException(status_code=403, detail="Passwords do not match")
+            raise HTTPException(status_code=403, detail="Passwords do not match")
         # arbitrarily use password1
         password = password1
         # Make sure password is valid
         if self.passwordNotValid(password):
-            return HTTPException(
+            raise HTTPException(
                 status_code=403, detail="Password does fit requirements"
             )
         # Check if username already exist
         if self.usernameExist(username):
-            return HTTPException(status_code=403, detail="Username already exists")
+            raise HTTPException(status_code=403, detail="Username already exists")
 
         # Hash password with salt
         salt = bcrypt.gensalt()
@@ -64,9 +64,6 @@ class UserAuthService:
 
         # Insert authToken to a user who matches username and password
         for user in allUsers:
-            print("-" * 50)
-            print(user)
-
             # Match the username
             if username == user["username"]:
                 matchedPasswords = bcrypt.checkpw(
@@ -100,7 +97,7 @@ class UserAuthService:
                     return returnResponse
 
         # Any invalid login request will have a 403 response with invalid credentials
-        return HTTPException(status_code=403, detail="Invalid credentials")
+        raise HTTPException(status_code=403, detail="Invalid credentials")
 
     def logoutUser(self, auth_token: str):
         # check if auth token is not None
@@ -116,4 +113,4 @@ class UserAuthService:
                     {"username": username}, {"$unset": {"hashed_auth": ""}}
                 )
                 return RedirectResponse(url="/", status_code=302)
-        return HTTPException(status_code=403, detail="Invalid Logout Request")
+        raise HTTPException(status_code=403, detail="Invalid Logout Request")
