@@ -129,4 +129,4 @@ class ManagePostService:
             post_list.append(info)
 
         # json_list = json.dumps(post_list)
-        return post_list
+        return post_list[::-1]
