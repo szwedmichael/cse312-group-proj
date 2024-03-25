@@ -14,7 +14,7 @@ async def user_details(
     auth_token: Union[str, None] = Cookie(None),
 ):
     response.headers["X-Content-Type-Options"] = "nosniff"
-    return
+    return homepage_service.getName(auth_token)
 
 
 @router.get("/verify-auth")

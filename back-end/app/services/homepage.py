@@ -18,3 +18,13 @@ class HomepageService:
             {"hashed_auth": hashed_auth}
         )
         return {"isAuthenticated": bool(user_document)}
+
+    def getName(self, auth_token: str):
+        if not auth_token:
+            return {"username": None}
+    
+        hashed_auth = hashlib.sha256(auth_token.encode()).hexdigest()
+        user_document = self.credentials_collection.find_one(
+            {"hashed_auth": hashed_auth}
+        )
+        return {"username": user_document["username"]} if user_document else {"username": None}
