@@ -122,11 +122,11 @@ class ManagePostService:
 
         for post in all_post:
             info = {}
-            info["usernmae"] = post["username"]
+            info["username"] = post["username"]
             info["id"] = post["id"]
             info["content"] = post["content"]
             info["likes"] = post["likes"]
             post_list.append(info)
 
-        json_list = json.dumps(post_list)
-        return json_list
+        # json_list = json.dumps(post_list)
+        return post_list
