@@ -6,6 +6,7 @@ import uuid
 from fastapi.responses import RedirectResponse
 from fastapi import HTTPException, Depends
 from app.core.database import MongoDataBase
+import html
 
 
 class UserAuthService:
@@ -36,7 +37,7 @@ class UserAuthService:
         # xsrf = secrets.token_hex(32)
         # Create dictionaty to insert into database
         to_insert = {}
-        to_insert["username"] = username
+        to_insert["username"] = html.escape(username)
         to_insert["hashed_password"] = hashed_password
         to_insert["salt"] = salt
         # to_insert["xsrf"] = xsrf
