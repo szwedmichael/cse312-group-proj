@@ -11,10 +11,10 @@ class HomepageService:
 
     def checkUser(self, auth_token: str):
         if not auth_token:
-            return False
+            return {"isAuthenticated": False}
 
         hashed_auth = hashlib.sha256(auth_token.encode()).hexdigest()
         user_document = self.credentials_collection.find_one(
             {"hashed_auth": hashed_auth}
         )
-        return bool(user_document)
+        return {"isAuthenticated": bool(user_document)}
