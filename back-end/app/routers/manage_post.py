@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Cookie, Response
 from app.services.manage_post import ManagePostService
-from app.models.manage_post import AddPostModel, PostInteractionModel
+from app.models.manage_post import PostModel, PostInteractionModel
 from typing import Union
 
 router = APIRouter()
@@ -9,14 +9,12 @@ router = APIRouter()
 @router.post("/add-post")
 async def add_post(
     response: Response,
-    add_post_info: AddPostModel,
+    add_post_info: PostModel,
     manage_post_service: ManagePostService = Depends(),
     auth_token: Union[str, None] = Cookie(None),
 ):
     response.headers["X-Content-Type-Options"] = "nosniff"
-    return manage_post_service.addPost(
-        add_post_info.authToken, add_post_info.xsrf, add_post_info.post, auth_token
-    )
+    return manage_post_service.addPost(add_post_info, auth_token)
 
 
 @router.post("/like-post")

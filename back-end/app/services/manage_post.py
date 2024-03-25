@@ -15,23 +15,24 @@ class ManagePostService:
         self.post_collection = mongo_database.get_collection("posts")
 
     # body contains something like: {"location": "Buffalo, NY", "description": "I went to Niagara Falls and it was awesome", "date": MM/YYYY, "xsrf":xsrf}
-    def addPost(self, htmlXSRF, body, authToken: str):
+    def addPost(self, body, authToken: str):
         # Verify user exists
         validUser = self.validUser(authToken)
         if not validUser:
             return HTTPException(status_code=404, detail="Invalid User")
 
         # Obtains username and creates an id for the post
-        user = self.credentials_collection.find_one({"hashed_auth": validUser})
+        hashed_auth = validUser["hashed_auth"]
+        user = self.credentials_collection.find_one({"hashed_auth": hashed_auth})
         username = user["username"]
-        post_id = uuid.uuid4()
+        post_id = str(uuid.uuid4())
 
         # Obtains XSRF tokens
-        userXSRF = user["xsrf"]
+        # userXSRF = user["xsrf"]
 
         # Verifies XSRF tokens
-        if userXSRF != htmlXSRF:
-            return HTTPException(status_code=403, detail="Post Rejected!")
+        # if userXSRF != htmlXSRF:
+        #     return HTTPException(status_code=403, detail="Post Rejected!")
 
         # HTML escape any message from user
         location = html.escape(body.location)
@@ -47,7 +48,7 @@ class ManagePostService:
             "likes": 0,
         }
         self.post_collection.insert_one(content)
-
+        del content["_id"]
         return content
 
     def likePost(self, post_id, auth_token: str):

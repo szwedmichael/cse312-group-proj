@@ -32,14 +32,14 @@ class UserAuthService:
         # Hash password with salt
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(password.encode(), salt)
-        # Create XSFR token
-        xsfr = secrets.token_hex(32)
+        # Create XSRF token
+        xsrf = secrets.token_hex(32)
         # Create dictionaty to insert into database
         to_insert = {}
         to_insert["username"] = username
         to_insert["hashed_password"] = hashed_password
         to_insert["salt"] = salt
-        to_insert["xsfr"] = xsfr
+        to_insert["xsrf"] = xsrf
 
         # Insert credentials
         self.credentials_collection.insert_one(to_insert)
@@ -64,10 +64,14 @@ class UserAuthService:
 
         # Insert authToken to a user who matches username and password
         for user in allUsers:
+            print("-" * 50)
+            print(user)
 
             # Match the username
             if username == user["username"]:
-                matchedPasswords = bcrypt.checkpw(password.encode(), user["password"])
+                matchedPasswords = bcrypt.checkpw(
+                    password.encode(), user["hashed_password"]
+                )
 
                 # Match passwords
                 if matchedPasswords:
@@ -80,7 +84,7 @@ class UserAuthService:
                     # Update user profile in database with hashed_auth token
                     newContent = {
                         "username": username,
-                        "password": user["password"],
+                        "hashed_password": user["hashed_password"],
                         "salt": user["salt"],
                         "xsrf": user["xsrf"],
                         "hashed_auth": hashedAuthToken,
@@ -91,7 +95,7 @@ class UserAuthService:
                     # Redirect user back to home page with the set auth_token cookie
                     returnResponse = RedirectResponse(url="/", status_code=302)
                     returnResponse.set_cookie(
-                        "auth_token", authToken, max_age=4000, http_only=True
+                        "auth_token", authToken, max_age=4000, httponly=True
                     )
                     return returnResponse
 
