@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "../styles/Homepage.css";
 import vacationImage from "../images/red-m&m.png";
 import api from "../api";
+import HomepageLogged from './HomepageLogged.jsx'
 
 /*
 checks if user is logged in
