@@ -13,7 +13,7 @@ app = FastAPI()
 # https://stackoverflow.com/questions/62928450/how-to-put-backend-and-frontend-together-returning-react-frontend-from-fastapi
 # Sets the templates directory to the `build` folder from `npm run build`
 # this is where you'll find the index.html file.
-dist_dir = "../front-end/website/dist"
+dist_dir = "app/static/dist"
 templates = Jinja2Templates(directory=dist_dir)
 
 

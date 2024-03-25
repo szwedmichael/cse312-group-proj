@@ -1,0 +1,5 @@
+pymongo
+bcrypt
+uvicorn
+fastapi 
+jinja2 
