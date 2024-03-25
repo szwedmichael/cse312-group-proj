@@ -32,7 +32,7 @@ export default function Signup() {
         .then((response) => {
           if (response.status === 200) {
             //ok
-            window.location.href = response.url;
+            window.location.href = '/';
           } else {
             //not ok whatsoever :(
             setSignUpErrorMsg(response.statusText);

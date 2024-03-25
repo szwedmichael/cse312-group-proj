@@ -27,7 +27,7 @@ export default function Login() {
         // TODO: This doesnt work on response but I got the post working
         if (response.status === 200) {
           //ok
-          window.location.href = response.url;
+          window.location.href = '/';
         } else {
           //not ok whatsoever :(
           setSignUpErrorMsg(response.statusText);

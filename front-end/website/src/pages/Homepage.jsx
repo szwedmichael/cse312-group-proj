@@ -48,14 +48,14 @@ function Homepage() {
           </div>
           <div className="home-login">
             <form>
-              <a href="http://0.0.0.0:8080/login" className="login-button">
+              <a href="http://localhost:8080/login" className="login-button">
                 Login
               </a>
             </form>
           </div>
           <div className="home-signup">
             <form>
-              <a href="http://0.0.0.0:8080/signup" className="signup-button">
+              <a href="http://localhost:8080/signup" className="signup-button">
                 Sign up
               </a>
             </form>
