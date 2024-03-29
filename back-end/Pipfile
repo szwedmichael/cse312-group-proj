@@ -9,6 +9,7 @@ uvicorn = "*"
 pymongo = "*"
 bcrypt = "*"
 jinja2 = "*"
+python-multipart = "*"
 
 [dev-packages]
 

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Cookie, Response
+from fastapi import APIRouter, Depends, Cookie, Response, UploadFile, File
 from app.services.manage_post import ManagePostService
 from app.models.manage_post import PostModel, PostInteractionModel
 from typing import Union
@@ -6,15 +6,18 @@ from typing import Union
 router = APIRouter()
 
 
+# Supposedly allows body data and multipart upload
+# https://github.com/tiangolo/fastapi/issues/2257#issuecomment-726843164
 @router.post("/add-post")
 async def add_post(
     response: Response,
-    add_post_info: PostModel,
+    add_post_info: PostModel = Depends(),
+    file: Union[UploadFile, None] = None,
     manage_post_service: ManagePostService = Depends(),
     auth_token: Union[str, None] = Cookie(None),
 ):
     response.headers["X-Content-Type-Options"] = "nosniff"
-    return manage_post_service.addPost(add_post_info, auth_token)
+    return manage_post_service.addPost(add_post_info, file, auth_token)
 
 
 @router.post("/like-post")
