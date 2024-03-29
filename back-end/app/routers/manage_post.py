@@ -6,6 +6,8 @@ from typing import Union
 router = APIRouter()
 
 
+# Supposedly allows body data and multipart upload
+# https://github.com/tiangolo/fastapi/issues/2257#issuecomment-726843164
 @router.post("/add-post")
 async def add_post(
     response: Response,
