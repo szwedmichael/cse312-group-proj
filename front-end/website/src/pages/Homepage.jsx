@@ -12,8 +12,11 @@ renders homepage where posts are if they are
 function Homepage() {
   // sends get request to verify-auth to check if user is logged in
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Add a loading state
+
   useEffect(() => {
     const checkAuth = async () => {
+      setIsLoading(true); // Set loading to true before making the request
       try {
         const response = await api.get("/verify-auth", {
           withCredentials: true,
@@ -26,11 +29,17 @@ function Homepage() {
       } catch (error) {
         console.error("Error verifying authentication:", error);
         setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false); // Set loading to false after the request is complete
       }
     };
 
     checkAuth();
   }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   // renders based on requests reponse bool (yes or no)
   return (
@@ -49,14 +58,14 @@ function Homepage() {
           </div>
           <div className="home-login">
             <form>
-              <a href="http://localhost:8080/login" className="login-button">
+              <a href={`${api.defaults.baseURL}/login`} className="login-button">
                 Login
               </a>
             </form>
           </div>
           <div className="home-signup">
             <form>
-              <a href="http://localhost:8080/signup" className="signup-button">
+              <a href={`${api.defaults.baseURL}/signup`} className="signup-button">
                 Sign up
               </a>
             </form>
