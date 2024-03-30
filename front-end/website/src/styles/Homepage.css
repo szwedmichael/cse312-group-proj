@@ -27,12 +27,6 @@
     align-items: center;
     min-height: 100vh; 
 }
-  
-.home-header {
-    font-size: 75px; 
-    color: #FBF6EE;
-    text-align: center;
-}
 
 .home-login, .home-signup {
     font-size: 2rem; 

@@ -132,13 +132,10 @@ function HomepageLogged() {
   // posts format { id: 1, username: "yolo12", content: { location: 'Buffalo, NY', description: 'I love it here!!!!', date: '03/2024' }, likes: 12 },
   return (
     <>
-      <div className="homepage-welcome">
-        <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Welcome, {userName}!</h1>
-      </div>
+      <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Welcome, {userName}!</h1>
       <div className="homepage-logout">
         <button className='btn' onClick={logout}>Logout</button>
       </div>
-      
       <div className="homepage-new-post">
         <h2 className="mb-4 text-xl leading-none tracking-tight text-gray-900 md:text-4xl dark:text-white">Create New Post</h2>
         <form onSubmit={handlePost}>
@@ -197,6 +194,7 @@ function HomepageLogged() {
         </ul>
       </div> */}
       <div className="homepage-all-posts">
+        <h1 className="mb-4 text-4xl leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"> Posts</h1>
         <ul>
           {posts.map((post) => (
             <li key={post.id}>
