@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .homepage-all-posts{
     display: flex;
     flex-direction: column;
@@ -13,7 +17,7 @@
 }
 
 .homepage-all-posts ul {
-    list-style-type: none; /* Remove bullets */
+    list-style-type: none; 
     padding: 0;
 }
 

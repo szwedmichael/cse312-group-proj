@@ -21,7 +21,12 @@ function HomepageLogged() {
   const [userName, setUserName] = useState("");
 
   // some mock posts
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([
+    { id: 1, username: "yolo12", content: { location: 'Buffalo, NY', description: 'I love it here!!!!', date: '03/2024' }, likes: 12 },
+    { id: 2, username: "ohboy", content: { location: 'New York, NY', description: 'Boston is better ;)', date: '03/2024' }, likes: 20 },
+    { id: 3, username: "sofun", content: { location: 'Los Angeles, CA', description: 'What happened to this place', date: '03/2024' }, likes: 5 },
+  ]);
+  
 
   // new post
   const [newPost, setNewPost] = useState({
@@ -124,19 +129,20 @@ function HomepageLogged() {
     }
   };
 
-  // posts {"location": "Buffalo, NY", "description": "I went to Niagara Falls and it was awesome", "date": MM/YYYY}
+  // posts format { id: 1, username: "yolo12", content: { location: 'Buffalo, NY', description: 'I love it here!!!!', date: '03/2024' }, likes: 12 },
   return (
     <>
       <div className="homepage-welcome">
-        <h1>Welcome, {userName}!</h1>
+        <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Welcome, {userName}!</h1>
       </div>
       <div className="homepage-logout">
-        <button onClick={logout}>Logout</button>
+        <button className='btn' onClick={logout}>Logout</button>
       </div>
+      
       <div className="homepage-new-post">
-        <h2>Create New Post</h2>
+        <h2 className="mb-4 text-xl leading-none tracking-tight text-gray-900 md:text-4xl dark:text-white">Create New Post</h2>
         <form onSubmit={handlePost}>
-          <label>
+          <label >
             Location:
             <input
               type="text"
@@ -166,10 +172,10 @@ function HomepageLogged() {
               placeholder="MM/YYYY"
             />
           </label>
-          <button type="submit">Post</button>
+          <button className='btn' type="submit">Post</button>
         </form>
       </div>
-      <div className="homepage-all-posts">
+      {/* <div className="homepage-all-posts">
         <h1>Posts</h1>
         <ul>
           {posts.map((post) => (
@@ -189,7 +195,37 @@ function HomepageLogged() {
             </li>
           ))}
         </ul>
+      </div> */}
+      <div className="homepage-all-posts">
+        <ul>
+          {posts.map((post) => (
+            <li key={post.id}>
+              <div className="card w-96 bg-base-100 shadow-xl">
+                <figure><img src="https://as1.ftcdn.net/v2/jpg/02/43/25/90/1000_F_243259090_crbVsAqKF3PC2jk2eKiUwZHBPH8Q6y9Y.jpg" alt="Shoes" /></figure>
+                <div className="card-body">
+                  <h2 className="card-title">
+                    {post.username}
+                  </h2>
+                  <p>{post.content.description}</p>
+                  <div className="card-actions justify-end">
+                    <div className="like-section">
+                      <img
+                        src={likeButton}
+                        alt="Like"
+                        onClick={() => likePost(post.id)}
+                      />
+                      <span className="like-count">{post.likes}</span>
+                    </div>
+                    <div className="badge badge-outline">{post.content.location}</div> 
+                    <div className="badge badge-outline">{post.content.date}</div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
+        
     </>
   );
 }

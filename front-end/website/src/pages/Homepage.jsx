@@ -38,7 +38,11 @@ function Homepage() {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+
+    return (<div class="loader-container">
+              <span className="loading loading-spinner loading-lg"></span>
+            </div>)
+
   }
 
   // renders based on requests reponse bool (yes or no)
