@@ -172,34 +172,13 @@ function HomepageLogged() {
           <button className='btn' type="submit">Post</button>
         </form>
       </div>
-      {/* <div className="homepage-all-posts">
-        <h1>Posts</h1>
-        <ul>
-          {posts.map((post) => (
-            <li key={post.id} className="post">
-              <h2>{post.username}</h2>
-              <h4>{post.content.location}</h4>
-              <p>{post.content.description}</p>
-              <div className="post-date">{post.content.date}</div>
-              <div className="like-section">
-                <img
-                  src={likeButton}
-                  alt="Like"
-                  onClick={() => likePost(post.id)}
-                />
-                <span className="like-count">{post.likes}</span>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div> */}
       <div className="homepage-all-posts">
         <h1 className="mb-4 text-4xl leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"> Posts</h1>
         <ul>
           {posts.map((post) => (
             <li key={post.id}>
               <div className="card w-96 bg-base-100 shadow-xl">
-                <figure><img src="https://as1.ftcdn.net/v2/jpg/02/43/25/90/1000_F_243259090_crbVsAqKF3PC2jk2eKiUwZHBPH8Q6y9Y.jpg" alt="Shoes" /></figure>
+                <figure><img src="https://as1.ftcdn.net/v2/jpg/02/43/25/90/1000_F_243259090_crbVsAqKF3PC2jk2eKiUwZHBPH8Q6y9Y.jpg" alt="Shoes" /></figure> {/* placeholder image */}
                 <div className="card-body">
                   <h2 className="card-title">
                     {post.username}
