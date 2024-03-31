@@ -47,7 +47,7 @@ class ManagePostService:
 
         else:
             file_path=f"./back-end/app/static\dist/images/{post_id}.jpeg"
-            with open(filePath, "wb") as f:
+            with open(file_path, "wb") as f:
                 f.write(file)
 
         # Insert content into database
