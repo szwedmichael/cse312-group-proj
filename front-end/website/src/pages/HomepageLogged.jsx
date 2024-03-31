@@ -106,6 +106,8 @@ function HomepageLogged() {
     }
   };
 
+  const [showForm, setShowForm] = useState(false); // State to toggle form visibility
+
   // resets values after pressing post button
   const postReset = (event) => {
     const { name, value } = event.target;
@@ -124,6 +126,7 @@ function HomepageLogged() {
       const createdPost = response.data;
       setPosts([createdPost, ...posts]);
       setNewPost({ location: "", description: "", date: "" });
+      setShowForm(false); // Hide form after posting
     } catch (error) {
       console.error("Error creating post:", error);
     }
@@ -131,53 +134,50 @@ function HomepageLogged() {
 
   // posts format { id: 1, username: "yolo12", content: { location: 'Buffalo, NY', description: 'I love it here!!!!', date: '03/2024' }, likes: 12 },
   return (
-    <>
+    <div className="home-entirepage">
       <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Welcome, {userName}!</h1>
       <div className="homepage-logout">
-        <button className='btn' onClick={logout}>Logout</button>
+        <button className='btn mb-2' onClick={logout}>Logout</button>
       </div>
       <div className="homepage-new-post">
-        <h2 className="mb-4 text-xl leading-none tracking-tight text-gray-900 md:text-4xl dark:text-white">Create New Post</h2>
-        <form onSubmit={handlePost}>
-          <label >
-            Location:
-            <input
-              type="text"
-              name="location"
-              value={newPost.location}
-              onChange={postReset}
-              placeholder="Enter your location here..."
-            />
-          </label>
-          <label>
-            Description:
-            <textarea
-              type="text"
-              name="description"
-              value={newPost.description}
-              onChange={postReset}
-              placeholder="Enter your description here..."
-            />
-          </label>
-          <label>
-            Date:
-            <input
-              type="text"
-              name="date"
-              value={newPost.date}
-              onChange={postReset}
-              placeholder="MM/YYYY"
-            />
-          </label>
-          <button className='btn' type="submit">Post</button>
-        </form>
+        <button className="btn mb-4" onClick={() => setShowForm(!showForm)}>Create New Post</button>
+        {showForm && (
+          <div className="max-w-lg lg:ms-auto mx-auto text-center ">
+            <div className="py-16 px-7 rounded-md bg-white">           
+              <form onSubmit={handlePost}>
+                  <div className="grid md:grid-cols-2 grid-cols-1 gap-6">
+                    <div>
+                      <label for="subject" className="float-left block  font-normal text-gray-400 text-lg">Location</label>
+                      <input type="text" name="location" placeholder="Location" value={newPost.location} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700 "></input>  
+                    </div>
+                    <div>
+                      <label for="subject" className="float-left block  font-normal text-gray-400 text-lg">Date</label>
+                      <input type="text" name="date" placeholder="MM/YYYY"  value={newPost.date} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700"></input>                                                                          
+                    </div>
+                    <div className="md:col-span-2">
+                      <label for="subject" className="float-left block  font-normal text-gray-400 text-lg">Upload an image &#128513;</label>
+                      {/* FILE UPLOAD TODO */}
+                      <input type="file" id="file" name="file" placeholder="Upload an image" accept=".jpg, .png" className="peer block w-full appearance-none border-none   bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"></input>
+                    </div>
+                    <div className="md:col-span-2">
+                      <textarea name="description" value={newPost.description} onChange={postReset} placeholder="Post description" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700" rows="5" cols="" ></textarea>
+                    </div>
+                    <div className="md:col-span-2">
+                      <button className="py-3 text-base font-medium rounded text-white bg-blue-800 w-full hover:bg-blue-700 transition duration-300">Post</button>
+                    </div>
+                  </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
+      <h1 className="mb-4 text-4xl leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Posts</h1>
       <div className="homepage-all-posts">
-        <h1 className="mb-4 text-4xl leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"> Posts</h1>
         <ul>
           {posts.map((post) => (
-            <li key={post.id}>
-              <div className="card w-96 bg-base-100 shadow-xl">
+            <li key={post.id} className="mb-10">
+              <div className="card w-full max-w-screen-xl bg-base-100 shadow-xl ">
+                {/* DISPLAY IMAGE TODO */}
                 <figure><img src="https://as1.ftcdn.net/v2/jpg/02/43/25/90/1000_F_243259090_crbVsAqKF3PC2jk2eKiUwZHBPH8Q6y9Y.jpg" alt="Shoes" /></figure> {/* placeholder image */}
                 <div className="card-body">
                   <h2 className="card-title">
@@ -202,8 +202,43 @@ function HomepageLogged() {
           ))}
         </ul>
       </div>
-        
-    </>
+    </div>
   );
 }
 export default HomepageLogged;
+
+// old post form
+// <form onSubmit={handlePost}>
+// <label>
+//   Location:
+//   <input
+//     type="text"
+//     name="location"
+//     value={newPost.location}
+//     onChange={postReset}
+//     placeholder="Enter your location here..."
+//   />
+// </label>
+// <label>
+//   Description:
+//   <textarea
+//     type="text"
+//     name="description"
+//     value={newPost.description}
+//     onChange={postReset}
+//     placeholder="Enter your description here..."
+//   />
+// </label>
+// <label>
+//   Date:
+//   <input
+//     type="text"
+//     name="date"
+//     value={newPost.date}
+//     onChange={postReset}
+//     placeholder="MM/YYYY"
+//   />
+// </label>
+// <button className='btn' type="submit">Post</button>
+// </form>
+
