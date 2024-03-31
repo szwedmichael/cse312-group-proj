@@ -12,10 +12,7 @@ DONE:
 - get request for posts
 - logout
 - like or unlike post
-
-IN PROGRESS:
-- post request for posts (creating posts)
-- authentication tokens ($$$)
+- post request for posts
 */
 function HomepageLogged() {
   const [userName, setUserName] = useState("");
@@ -33,6 +30,7 @@ function HomepageLogged() {
     location: "",
     description: "",
     date: "",
+    file: null,
   });
 
   useEffect(() => {
@@ -66,6 +64,7 @@ function HomepageLogged() {
     fetchPosts();
   }, []);
 
+  
   // logout
   const logout = async (event) => {
     event.preventDefault();
@@ -91,6 +90,7 @@ function HomepageLogged() {
       }
       return post;
     });
+    
     setPosts(updatedPosts);
 
     // change request whether like or unlike
@@ -110,104 +110,206 @@ function HomepageLogged() {
 
   // resets values after pressing post button
   const postReset = (event) => {
-    const { name, value } = event.target;
-    setNewPost({ ...newPost, [name]: value });
+    const { name, value, files } = event.target;
+    if (name === "file") {
+      setNewPost({ ...newPost, file: files[0] });
+    } else {
+      setNewPost({ ...newPost, [name]: value });
+    }
   };
-
+  // post request for posts
   const handlePost = async (event) => {
     event.preventDefault();
-    const postData = {
-      post: newPost,
-    };
+    const formData = new FormData();
+    formData.append("location", newPost.location);
+    formData.append("description", newPost.description);
+    formData.append("date", newPost.date);
+    if (newPost.file) {
+      formData.append("file", newPost.file);
+    }
+    // send post request
     try {
-      const response = await api.post("/add-post", newPost, {
+      const response = await api.post("/add-post", formData, {
         withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       const createdPost = response.data;
       setPosts([createdPost, ...posts]);
-      setNewPost({ location: "", description: "", date: "" });
-      setShowForm(false); // Hide form after posting
+      setNewPost({ location: "", description: "", date: "", file: null });
+      setShowForm(false);
     } catch (error) {
       console.error("Error creating post:", error);
     }
   };
 
+//just to demo the pictures appearing
+
+// return (
+//   <div className="home-entirepage">
+//     <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Welcome, {userName}!</h1>
+//     <div className="homepage-logout">
+//       <button className='btn mb-2' onClick={logout}>Logout</button>
+//     </div>
+//     <div className="homepage-new-post">
+//       <button className="btn mb-4" onClick={() => setShowForm(!showForm)}>Create New Post</button>
+//       {showForm && (
+//         <div className="max-w-lg lg:ms-auto mx-auto text-center ">
+//           <div className="py-16 px-7 rounded-md bg-white">           
+//             <form onSubmit={handlePost}>
+//                 <div className="grid md:grid-cols-2 grid-cols-1 gap-6">
+//                   <div>
+//                     <label for="subject" className="float-left block  font-normal text-gray-400 text-lg">Location</label>
+//                     <input type="text" name="location" placeholder="Location" value={newPost.location} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700 "></input>  
+//                   </div>
+//                   <div>
+//                     <label for="subject" className="float-left block  font-normal text-gray-400 text-lg">Date</label>
+//                     <input type="text" name="date" placeholder="MM/YYYY"  value={newPost.date} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700"></input>                                                                          
+//                   </div>
+//                   <div className="md:col-span-2">
+//                     <label for="subject" className="float-left block  font-normal text-gray-400 text-lg">Upload an image &#128513;</label>
+//                     {/* FILE UPLOAD TODO */}
+//                     <input type="file" id="file" name="file" placeholder="Upload an image" accept=".jpg, .png" className="peer block w-full appearance-none border-none   bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"></input>
+//                   </div>
+//                   <div className="md:col-span-2">
+//                     <textarea name="description" value={newPost.description} onChange={postReset} placeholder="Post description" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700" rows="5" cols="" ></textarea>
+//                   </div>
+//                   <div className="md:col-span-2">
+//                     <button className="py-3 text-base font-medium rounded text-white bg-blue-800 w-full hover:bg-blue-700 transition duration-300">Post</button>
+//                   </div>
+//                 </div>
+//             </form>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//     <h1 className="mb-4 text-4xl leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Posts</h1>
+//     <div className="homepage-all-posts">
+//       <ul>
+//         {posts.map((post) => (
+//           <li key={post.id} className="mb-10">
+//             <div className="card w-full max-w-screen-xl bg-base-100 shadow-xl ">
+//               {/* DISPLAY IMAGE TODO */}
+//               <figure><img src="https://as1.ftcdn.net/v2/jpg/02/43/25/90/1000_F_243259090_crbVsAqKF3PC2jk2eKiUwZHBPH8Q6y9Y.jpg" alt="Shoes" /></figure> {/* placeholder image */}
+//               <div className="card-body">
+//                 <h2 className="card-title">
+//                   {post.username}
+//                 </h2>
+//                 <p>{post.content.description}</p>
+//                 <div className="card-actions justify-end">
+//                   <div className="like-section">
+//                     <img
+//                       src={likeButton}
+//                       alt="Like"
+//                       onClick={() => likePost(post.id)}
+//                     />
+//                     <span className="like-count">{post.likes}</span>
+//                   </div>
+//                   <div className="badge badge-outline">{post.content.location}</div> 
+//                   <div className="badge badge-outline">{post.content.date}</div>
+//                 </div>
+//               </div>
+//             </div>
+//           </li>
+//         ))}
+//       </ul>
+//     </div>
+//   </div>
+// );
+// }
+// export default HomepageLogged;
+
+
+
+
+
+// still needs to be connected to the backend to get and post the posts
+
   // posts format { id: 1, username: "yolo12", content: { location: 'Buffalo, NY', description: 'I love it here!!!!', date: '03/2024' }, likes: 12 },
-  return (
-    <div className="home-entirepage">
-      <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Welcome, {userName}!</h1>
-      <div className="homepage-logout">
-        <button className='btn mb-2' onClick={logout}>Logout</button>
-      </div>
-      <div className="homepage-new-post">
-        <button className="btn mb-4" onClick={() => setShowForm(!showForm)}>Create New Post</button>
-        {showForm && (
-          <div className="max-w-lg lg:ms-auto mx-auto text-center ">
-            <div className="py-16 px-7 rounded-md bg-white">           
-              <form onSubmit={handlePost}>
-                  <div className="grid md:grid-cols-2 grid-cols-1 gap-6">
-                    <div>
-                      <label for="subject" className="float-left block  font-normal text-gray-400 text-lg">Location</label>
-                      <input type="text" name="location" placeholder="Location" value={newPost.location} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700 "></input>  
-                    </div>
-                    <div>
-                      <label for="subject" className="float-left block  font-normal text-gray-400 text-lg">Date</label>
-                      <input type="text" name="date" placeholder="MM/YYYY"  value={newPost.date} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700"></input>                                                                          
-                    </div>
-                    <div className="md:col-span-2">
-                      <label for="subject" className="float-left block  font-normal text-gray-400 text-lg">Upload an image &#128513;</label>
-                      {/* FILE UPLOAD TODO */}
-                      <input type="file" id="file" name="file" placeholder="Upload an image" accept=".jpg, .png" className="peer block w-full appearance-none border-none   bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"></input>
-                    </div>
-                    <div className="md:col-span-2">
-                      <textarea name="description" value={newPost.description} onChange={postReset} placeholder="Post description" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700" rows="5" cols="" ></textarea>
-                    </div>
-                    <div className="md:col-span-2">
-                      <button className="py-3 text-base font-medium rounded text-white bg-blue-800 w-full hover:bg-blue-700 transition duration-300">Post</button>
-                    </div>
+return (
+  <div className="home-entirepage">
+    <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Welcome, {userName}!</h1>
+    <div className="homepage-logout">
+      <button className='btn mb-2' onClick={logout}>Logout</button>
+    </div>
+    <div className="homepage-new-post">
+      <button className="btn mb-4" onClick={() => setShowForm(!showForm)}>Create New Post</button>
+      {showForm && (
+        <div className="max-w-lg lg:ms-auto mx-auto text-center ">
+          <div className="py-16 px-7 rounded-md bg-white">           
+            <form onSubmit={handlePost}>
+                <div className="grid md:grid-cols-2 grid-cols-1 gap-6">
+                  <div>
+                    <label htmlFor="subject" className="float-left block  font-normal text-gray-400 text-lg">Location</label>
+                    <input type="text" name="location" placeholder="Location" value={newPost.location} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700 "></input>  
                   </div>
-              </form>
-            </div>
-          </div>
-        )}
-      </div>
-      <h1 className="mb-4 text-4xl leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Posts</h1>
-      <div className="homepage-all-posts">
-        <ul>
-          {posts.map((post) => (
-            <li key={post.id} className="mb-10">
-              <div className="card w-full max-w-screen-xl bg-base-100 shadow-xl ">
-                {/* DISPLAY IMAGE TODO */}
-                <figure><img src="https://as1.ftcdn.net/v2/jpg/02/43/25/90/1000_F_243259090_crbVsAqKF3PC2jk2eKiUwZHBPH8Q6y9Y.jpg" alt="Shoes" /></figure> {/* placeholder image */}
-                <div className="card-body">
-                  <h2 className="card-title">
-                    {post.username}
-                  </h2>
-                  <p>{post.content.description}</p>
-                  <div className="card-actions justify-end">
-                    <div className="like-section">
-                      <img
-                        src={likeButton}
-                        alt="Like"
-                        onClick={() => likePost(post.id)}
-                      />
-                      <span className="like-count">{post.likes}</span>
-                    </div>
-                    <div className="badge badge-outline">{post.content.location}</div> 
-                    <div className="badge badge-outline">{post.content.date}</div>
+                  <div>
+                    <label htmlFor="subject" className="float-left block  font-normal text-gray-400 text-lg">Date</label>
+                    <input type="text" name="date" placeholder="MM/YYYY"  value={newPost.date} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700"></input>                                                                          
+                  </div>
+                  <div className="md:col-span-2">
+                    <label htmlFor="subject" className="float-left block  font-normal text-gray-400 text-lg">Upload an image &#128513;</label>
+                    <input type="file" id="file" name="file" placeholder="Upload an image" accept=".jpg, .png" onChange={postReset} className="peer block w-full appearance-none border-none   bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"></input>
+                  </div>
+                  <div className="md:col-span-2">
+                    <textarea name="description" value={newPost.description} onChange={postReset} placeholder="Post description" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700" rows="5" cols="" ></textarea>
+                  </div>
+                  <div className="md:col-span-2">
+                    <button className="py-3 text-base font-medium rounded text-white bg-blue-800 w-full hover:bg-blue-700 transition duration-300">Post</button>
                   </div>
                 </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
-  );
+    <h1 className="mb-4 text-4xl leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Posts</h1>
+    <div className="homepage-all-posts">
+      <ul>
+        {posts.map((post) => (
+          <li key={post.id} className="mb-10">
+            <div className="card w-full max-w-screen-xl bg-base-100 shadow-xl ">
+              {post.file && (
+                <figure>
+                  <img src={URL.createObjectURL(post.file)} alt="Post" />
+                </figure>
+              )}
+              <div className="card-body">
+                <h2 className="card-title">
+                  {post.username}
+                </h2>
+                <p>{post.content.description}</p>
+                <div className="card-actions justify-end">
+                  <div className="like-section">
+                    <img
+                      src={likeButton}
+                      alt="Like"
+                      onClick={() => likePost(post.id)}
+                    />
+                    <span className="like-count">{post.likes}</span>
+                  </div>
+                  <div className="badge badge-outline">{post.content.location}</div> 
+                  <div className="badge badge-outline">{post.content.date}</div>
+                </div>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+);
 }
+
 export default HomepageLogged;
 
+
+
+
+
 // old post form
+
 // <form onSubmit={handlePost}>
 // <label>
 //   Location:
@@ -241,4 +343,3 @@ export default HomepageLogged;
 // </label>
 // <button className='btn' type="submit">Post</button>
 // </form>
-
