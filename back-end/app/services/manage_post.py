@@ -42,12 +42,21 @@ class ManagePostService:
         # Might have to not do this if it is parsed as a datetime and not string
         date = html.escape(body.date)
 
+        if file == None:
+            file_path="./back-end/app/static\dist/images/noUpload.jpg"
+
+        else:
+            file_path=f"./back-end/app/static\dist/images/{post_id}.jpeg"
+            with open(filePath, "wb") as f:
+                f.write(file)
+
         # Insert content into database
         content = {
             "username": username,
             "id": post_id,
             "content": {"location": location, "description": description, "date": date},
             "likes": 0,
+            "file_path" : file_path
         }
         self.post_collection.insert_one(content)
         del content["_id"]
@@ -128,6 +137,8 @@ class ManagePostService:
             info["id"] = post["id"]
             info["content"] = post["content"]
             info["likes"] = post["likes"]
+            file_path=post["file_path"]
+            info["file"]=f"<img src='{file_path}' width = '600' height = '400' alt = 'Image not Found' />"
             post_list.append(info)
 
         # json_list = json.dumps(post_list)
