@@ -137,8 +137,7 @@ class ManagePostService:
             info["id"] = post["id"]
             info["content"] = post["content"]
             info["likes"] = post["likes"]
-            file_path=post["file_path"]
-            info["file"]=f"<img src='{file_path}' width = '600' height = '400' alt = 'Image not Found' />"
+            info["file"]=post["file_path"]
             post_list.append(info)
 
         # json_list = json.dumps(post_list)
