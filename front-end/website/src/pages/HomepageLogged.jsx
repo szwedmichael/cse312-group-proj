@@ -22,9 +22,9 @@ function HomepageLogged() {
 
   // some mock posts
   const [posts, setPosts] = useState([
-    { id: 1, username: "yolo12", content: { location: 'Buffalo, NY', description: 'I love it here!!!!', date: '03/2024' }, likes: 12 },
-    { id: 2, username: "ohboy", content: { location: 'New York, NY', description: 'Boston is better ;)', date: '03/2024' }, likes: 20 },
-    { id: 3, username: "sofun", content: { location: 'Los Angeles, CA', description: 'What happened to this place', date: '03/2024' }, likes: 5 },
+    // { id: 1, username: "yolo12", content: { location: 'Buffalo, NY', description: 'I love it here!!!!', date: '03/2024' }, likes: 12 },
+    // { id: 2, username: "ohboy", content: { location: 'New York, NY', description: 'Boston is better ;)', date: '03/2024' }, likes: 20 },
+    // { id: 3, username: "sofun", content: { location: 'Los Angeles, CA', description: 'What happened to this place', date: '03/2024' }, likes: 5 },
   ]);
   
 
@@ -178,7 +178,7 @@ function HomepageLogged() {
             <li key={post.id} className="mb-10">
               <div className="card w-full max-w-screen-xl bg-base-100 shadow-xl ">
                 {/* DISPLAY IMAGE TODO */}
-                <figure><img src="https://as1.ftcdn.net/v2/jpg/02/43/25/90/1000_F_243259090_crbVsAqKF3PC2jk2eKiUwZHBPH8Q6y9Y.jpg" alt="Shoes" /></figure> {/* placeholder image */}
+                <figure><img src={post.file} alt="Shoes" /></figure> {/* placeholder image */}
                 <div className="card-body">
                   <h2 className="card-title">
                     {post.username}
