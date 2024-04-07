@@ -1,4 +1,8 @@
-from fastapi import APIRouter, Depends, Cookie, Response, UploadFile, File, Form
+<<<<<<< HEAD
+from fastapi import APIRouter, Depends, Cookie, Response, UploadFile, WebSocket, Form
+=======
+from fastapi import APIRouter, Depends, Cookie, Response, UploadFile, WebSocket, Form
+>>>>>>> ad9a994f9360ab5896cd9082905be0629b7b5bfd
 from app.services.manage_post import ManagePostService
 from app.models.manage_post import PostModel, PostInteractionModel
 from typing import Union
@@ -54,3 +58,31 @@ async def all_posts(
 ):
     response.headers["X-Content-Type-Options"] = "nosniff"
     return manage_post_service.listPosts()
+
+
+# websocket_route
+@router.websocket("/ws-posts")
+async def ws_posts(
+    websocket: WebSocket,
+    manage_post_service: ManagePostService = Depends(),
+    auth_token: Union[str, None] = Cookie(None),
+    file: Union[UploadFile, None] = None,
+):
+    await websocket.accept()
+    while True:
+        response = Response()
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        data = await websocket.receive_json()
+        ret_msg = None
+        if data["action"] == "add":
+            ret_msg = manage_post_service.addPost(data, file, auth_token)
+        elif data["action"] == "like":
+            ret_msg = manage_post_service.likePost(data["post_id"], auth_token)
+        elif data["action"] == "unlike":
+            ret_msg = manage_post_service.unlikePost(
+                data["post_id"],
+                auth_token,
+            )
+        elif data["action"] == "list":
+            ret_msg = manage_post_service.listPosts()
+        await websocket.send_json(ret_msg)
