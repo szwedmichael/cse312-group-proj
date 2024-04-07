@@ -2,9 +2,18 @@
 import hashlib
 import html
 import uuid
+import magic
 import json
 from fastapi import HTTPException, Depends
 from app.core.database import MongoDataBase
+
+#Gets the mimeType of a file based on fileBytes
+def getMime(fileBytes):
+    #Create an instance of Magic
+    newMime = magic.Magic(mimeType=True)
+    #Obtain mimeType from the fileBytes
+    mimeType = newMime.from_buffer(fileBytes)
+    return mimeType
 
 
 class ManagePostService:
@@ -29,24 +38,27 @@ class ManagePostService:
         username = user["username"]
         post_id = str(uuid.uuid4())
 
-        # Obtains XSRF tokens
-        # userXSRF = user["xsrf"]
-
-        # Verifies XSRF tokens
-        # if userXSRF != htmlXSRF:
-        #     return HTTPException(status_code=403, detail="Post Rejected!")
-
         # HTML escape any message from user
         location = html.escape(body.location)
         description = html.escape(body.description)
         # Might have to not do this if it is parsed as a datetime and not string
         date = html.escape(body.date)
 
+        # If there's no file, obtain the noUpload.jpg
+        mimeType = "text/plain"
         if file == None:
+            mimeType == "image/jpeg"
             file_path="./back-end/app/static\dist/images/noUpload.jpg"
 
+        # If there is a file, get the mimeType and write the file
         else:
-            file_path=f"./back-end/app/static\dist/images/{post_id}.jpeg"
+            # Gets the mimeType and the signature
+            mimeType = getMime(file)
+            signature = mimeType.split("/",1)
+            signature = signature[1]
+
+            # Writes the file with the bytes
+            file_path=f"./back-end/app/static\dist/images/{post_id}.{signature}"
             with open(file_path, "wb") as f:
                 f.write(file)
 
@@ -56,8 +68,10 @@ class ManagePostService:
             "id": post_id,
             "content": {"location": location, "description": description, "date": date},
             "likes": 0,
-            "file_path" : file_path
+            "file_path" : file_path,
+            "mimeType" : mimeType
         }
+        
         self.post_collection.insert_one(content)
         del content["_id"]
         return content
