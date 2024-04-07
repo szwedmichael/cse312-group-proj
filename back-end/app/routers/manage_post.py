@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Cookie, Response, UploadFile, File
+from fastapi import APIRouter, Depends, Cookie, Response, UploadFile, File, Form
 from app.services.manage_post import ManagePostService
 from app.models.manage_post import PostModel, PostInteractionModel
 from typing import Union
@@ -11,11 +11,14 @@ router = APIRouter()
 @router.post("/add-post")
 async def add_post(
     response: Response,
-    add_post_info: PostModel = Depends(),
+    location: str = Form(...),
+    description: str = Form(...),
+    date: str = Form(...),
     file: Union[UploadFile, None] = None,
     manage_post_service: ManagePostService = Depends(),
     auth_token: Union[str, None] = Cookie(None),
 ):
+    add_post_info = PostModel(location=location, description=description, date=date)
     response.headers["X-Content-Type-Options"] = "nosniff"
     return manage_post_service.addPost(add_post_info, file, auth_token)
 

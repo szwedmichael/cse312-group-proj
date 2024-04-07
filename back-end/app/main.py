@@ -5,6 +5,8 @@ from .routers import user_auth, manage_post, homepage
 from fastapi.templating import Jinja2Templates
 from fastapi.requests import Request
 from fastapi.responses import FileResponse
+# from fastapi.staticfiles import StaticFiles
+
 
 
 app = FastAPI()
@@ -24,6 +26,8 @@ async def assets(file_path: str):
     response.headers["X-Content-Type-Options"] = "nosniff"
     return response
 
+# Mount the static folder to be served at '/static' URL path
+app.mount("/app/static", StaticFiles(directory="app/static/"), name="static")
 
 # Set CORS
 app.add_middleware(

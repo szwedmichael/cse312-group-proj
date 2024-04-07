@@ -3,7 +3,7 @@ import hashlib
 import html
 import uuid
 import json
-from fastapi import HTTPException, Depends
+from fastapi import HTTPException, Depends, UploadFile
 from app.core.database import MongoDataBase
 
 
@@ -17,7 +17,7 @@ class ManagePostService:
     # body contains something like: {"location": "Buffalo, NY", "description": "I went to Niagara Falls and it was awesome", "date": MM/YYYY, "xsrf":xsrf}
     # Body formatted in models/manage_post.py/PostModel
     # TODO: Use file
-    def addPost(self, body, file, authToken: str):
+    def addPost(self, body, file: UploadFile, authToken: str):
         # Verify user exists
         validUser = self.validUser(authToken)
         if not validUser:
@@ -43,12 +43,14 @@ class ManagePostService:
         date = html.escape(body.date)
 
         if file == None:
-            file_path="./back-end/app/static\dist/images/noUpload.jpg"
+            file_path="app/static/images/noUpload.jpg"
 
         else:
-            file_path=f"./back-end/app/static\dist/images/{post_id}.jpeg"
+            file_path=f"app/static/images/{post_id}.jpg"
             with open(file_path, "wb") as f:
-                f.write(file)
+                contents = file.file.read()  
+                f.write(contents)  
+            file.file.close()  
 
         # Insert content into database
         content = {
@@ -137,7 +139,7 @@ class ManagePostService:
             info["id"] = post["id"]
             info["content"] = post["content"]
             info["likes"] = post["likes"]
-            info["file"]=post["file_path"]
+            info["file"]= post["file_path"]
             post_list.append(info)
 
         # json_list = json.dumps(post_list)
