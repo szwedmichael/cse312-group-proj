@@ -38,7 +38,11 @@ function Homepage() {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+
+    return (<div class="loader-container">
+              <span className="loading loading-spinner loading-lg"></span>
+            </div>)
+
   }
 
   // renders based on requests reponse bool (yes or no)
@@ -48,8 +52,10 @@ function Homepage() {
         <HomepageLogged />
       ) : (
         <>
-          <div className="home-header">
-            <h1>Vacation Hub</h1>
+          <div className="home-title">
+            <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-7xl lg:text-6xl dark:text-white">Vacation Hub</h1>
+          </div>
+          <div className="home-image">
             <img
               src={vacationImage}
               alt="Vacation Scene"

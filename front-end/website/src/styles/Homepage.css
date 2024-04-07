@@ -1,15 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.loader-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white; 
+  }
+  
+  .loader {
+    border: 4px solid rgba(255, 255, 255, 0.3); 
+    border-radius: 50%;
+    border-top: 4px solid white;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+  }
+
 .home-entirepage {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh; 
-}
-  
-.home-header {
-    font-size: 75px; 
-    color: #FBF6EE;
-    text-align: center;
 }
 
 .home-login, .home-signup {
@@ -40,17 +56,16 @@
     margin: 20px 0; 
   }  
 
-/* Media query for smaller screens */
 @media (max-width: 600px) {
     .home-header {
-        font-size: 40px; /* Reduced font size */
-        margin: 15px 0; /* Adjusted margin */
+        font-size: 40px; 
+        margin: 15px 0; 
     }
     .home-login, .home-signup {
-        font-size: 1.5rem; /* Reduced font size */
-        margin: 15px 0; /* Adjusted margin */
+        font-size: 1.5rem; 
+        margin: 15px 0; 
     }
     .login-button, .signup-button {
-        font-size: 20px; /* Reduced font size */
+        font-size: 20px; 
     }
 }
