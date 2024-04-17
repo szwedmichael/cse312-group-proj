@@ -1,6 +1,6 @@
 pymongo
 bcrypt
-uvicorn
+uvicorn[standard]
 fastapi 
 jinja2 
 python-multipart

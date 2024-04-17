@@ -58,6 +58,80 @@ function HomepageLogged() {
     fetchUserDetails();
     fetchPosts();
   }, []);
+
+  // state for websockets
+  const [ws, setWs] = useState(null); 
+  // useEffect to connect to websocket
+  useEffect(() => {
+    let websocket;
+    // start a websocket and handle incoming messages
+    const connectWebSocket = () => {
+      websocket = new WebSocket('ws://localhost:8080/ws-posts');
+      websocket.onopen = () => {
+        console.log("WebSocket Connected");
+        setWs(websocket); // Update the WebSocket reference
+      };
+      // handle incoming messages
+      websocket.onmessage = (event) => {
+        console.log('Received message:', event.data);
+        const message = JSON.parse(event.data);
+        // if the server sends the complete post object
+        if (message.post_id && (message.likes !== undefined) && (message.like_status !== undefined)) {
+          // ipdate the likes for the post
+          updatePostLikes(message.post_id, message.likes, message.like_status);
+        } else {
+          console.error('Invalid message format', message);
+        }
+      };
+      websocket.onerror = (error) => {
+        console.log("WebSocket Error:", error);
+      };
+      // handle disconnecting, reconnets after 3 seconds (can get rid of)
+      websocket.onclose = (event) => {
+        console.log("WebSocket Disconnected", event);
+        if (!event.wasClean) {
+          console.log(`WebSocket reconnecting...`);
+          setTimeout(connectWebSocket, 3000); // Reconnect after 3 seconds
+        }
+      };
+    };
+    // init connection
+    connectWebSocket();
+    return () => {
+      if (websocket) {
+        websocket.close(1000, 'Component unmounting');
+      }
+    };
+  }, []);
+  
+  // updates likes for a post 
+  const updatePostLikes = (postId, likes, likeStatus) => {
+    console.log(`Updating likes for post ${postId}: likes = ${likes}, likedByUser = ${likeStatus}`);
+    // update the post state
+    setPosts(currentPosts => 
+      currentPosts.map(post => {
+        if (post.id === postId) {
+          console.log(`Found post ${postId}, updating...`);
+          return { ...post, likes, likedByUser: likeStatus };
+        }
+        return post;
+      })
+    );
+  };
+
+  // Like or unlike post using WebSocket
+  const likePost = (postId) => {
+    // find if post exists
+    const post = posts.find(p => p.id === postId);
+    if (!post) return;
+    console.log('Post likedByUser:', post.likedByUser);
+    // change action depending on likedByUser
+    const action = post.likedByUser ? "unlike" : "like";
+    // send message to server
+    const message = { action, post_id: postId };
+    console.log('Sending message:', message);
+    ws.send(JSON.stringify(message));
+  };
   
   // logout
   const logout = async (event) => {
@@ -67,36 +141,6 @@ function HomepageLogged() {
       window.location.href = "/";
     } catch (error) {
       console.error("Error logging out:", error);
-    }
-  };
-
-  // like or unlike post
-  const likePost = async (postId) => {
-    const data = {
-      post_id: postId,
-    };
-    const updatedPosts = posts.map((post) => {
-      if (post.id === postId) {
-        // updates on frontend
-        const likedByUser = !post.likedByUser;
-        const likes = likedByUser ? post.likes + 1 : post.likes - 1;
-        return { ...post, likedByUser, likes };
-      }
-      return post;
-    });
-    
-    setPosts(updatedPosts);
-
-    // change request whether like or unlike
-    const endpoint = updatedPosts.find((post) => post.id === postId).likedByUser
-      ? "/like-post"
-      : "/unlike-post";
-
-    // send that post request (like-post or unlike-post)
-    try {
-      await api.post(endpoint, data);
-    } catch (error) {
-      console.error("Error updating like:", error);
     }
   };
 

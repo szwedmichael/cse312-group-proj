@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, Cookie, Response, UploadFile, WebSocket, Form
 from app.services.manage_post import ManagePostService
 from app.models.manage_post import PostModel, PostInteractionModel
-from typing import Union
+from typing import Union, List
+from starlette.websockets import WebSocketDisconnect
 
 router = APIRouter()
 
@@ -55,8 +56,16 @@ async def all_posts(
     response.headers["X-Content-Type-Options"] = "nosniff"
     return manage_post_service.listPosts()
 
+# this will store active webSocket connections
+active_websockets: List[WebSocket] = []
+# this will broadcast the message to all active websockets
+async def broadcast(data):
+    for websocket in active_websockets:
+        try:
+            await websocket.send_json(data)
+        except WebSocketDisconnect:
+            active_websockets.remove(websocket)
 
-# websocket_route
 @router.websocket("/ws-posts")
 async def ws_posts(
     websocket: WebSocket,
@@ -65,20 +74,19 @@ async def ws_posts(
     file: Union[UploadFile, None] = None,
 ):
     await websocket.accept()
-    while True:
-        response = Response()
-        response.headers["X-Content-Type-Options"] = "nosniff"
-        data = await websocket.receive_json()
-        ret_msg = None
-        if data["action"] == "add":
-            ret_msg = manage_post_service.addPost(data, file, auth_token)
-        elif data["action"] == "like":
-            ret_msg = manage_post_service.likePost(data["post_id"], auth_token)
-        elif data["action"] == "unlike":
-            ret_msg = manage_post_service.unlikePost(
-                data["post_id"],
-                auth_token,
-            )
-        elif data["action"] == "list":
-            ret_msg = manage_post_service.listPosts()
-        await websocket.send_json(ret_msg)
+    active_websockets.append(websocket)
+    try:
+        while True:
+            response = Response()
+            response.headers["X-Content-Type-Options"] = "nosniff"
+            data = await websocket.receive_json()
+            ret_msg = None
+            if data["action"] == "like":
+                ret_msg = manage_post_service.likePost(data["post_id"], auth_token)
+            elif data["action"] == "unlike":
+                ret_msg = manage_post_service.unlikePost(data["post_id"], auth_token)
+            
+            # broadcast the response to all clients
+            await broadcast(ret_msg)
+    except WebSocketDisconnect:
+        active_websockets.remove(websocket)
