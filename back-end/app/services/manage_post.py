@@ -115,11 +115,11 @@ class ManagePostService:
         username = user["username"]
         # Should never be able to unlike a post without any likes
         if "users_liked" not in post_document:
-            raise HTTPException(status_code=403, detail="There are Already Zero Likes")
+            return {"post_id": post_id, "likes": 0, "like_status": False}
         users_liked = post_document["users_liked"]
         # Exception if user is not in liked list
         if username not in users_liked:
-            raise HTTPException(status_code=404, detail="User Never Liked")
+            return {"post_id": post_id, "likes": len(users_liked), "like_status": False}
         users_liked.remove(username)
         likes = len(users_liked)
         # Update users liked and number of likes

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../api.js";
 import "../styles/HomepageLogged.css";
 import likeButton from "../images/like-button.png";
+import unlikeButton from "../images/unlike-button.png";
 
 /*
 This is the homepage for a logged in user
@@ -126,7 +127,21 @@ function HomepageLogged() {
     if (!post) return;
     console.log('Post likedByUser:', post.likedByUser);
     // change action depending on likedByUser
-    const action = post.likedByUser ? "unlike" : "like";
+    const action = "like";
+    // send message to server
+    const message = { action, post_id: postId };
+    console.log('Sending message:', message);
+    ws.send(JSON.stringify(message));
+  };
+
+  // Like or unlike post using WebSocket
+  const unlikePost = (postId) => {
+    // find if post exists
+    const post = posts.find(p => p.id === postId);
+    if (!post) return;
+    console.log('Post likedByUser:', post.likedByUser);
+    // change action depending on likedByUser
+    const action = "unlike";
     // send message to server
     const message = { action, post_id: postId };
     console.log('Sending message:', message);
@@ -239,6 +254,11 @@ function HomepageLogged() {
                   <p>{post.content.description}</p>
                   <div className="card-actions justify-end">
                     <div className="like-section">
+                      <img
+                        src={unlikeButton}
+                        alt="Unlike"
+                        onClick={() => unlikePost(post.id)}
+                      />
                       <img
                         src={likeButton}
                         alt="Like"
