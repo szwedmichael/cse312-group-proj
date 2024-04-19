@@ -67,7 +67,7 @@ function HomepageLogged() {
     let websocket;
     // start a websocket and handle incoming messages
     const connectWebSocket = () => {
-      websocket = new WebSocket(`ws://${api.defaults.baseURL}/ws-posts`);
+      websocket = new WebSocket(`wss://${api.defaults.baseURL}/ws-posts`);
       websocket.onopen = () => {
         console.log("WebSocket Connected");
         setWs(websocket); // Update the WebSocket reference
