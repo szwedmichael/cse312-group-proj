@@ -16,9 +16,9 @@ def getMime(fileBytes):
     mimeType = newMime.from_buffer(fileBytes)
     return mimeType
 
-randomOrderOfPosts = False
 
 class ManagePostService:
+    randomOrderOfPosts = False
 
     def __init__(self, mongo_database: MongoDataBase = Depends()):
         self.db = mongo_database.db
@@ -155,7 +155,7 @@ class ManagePostService:
         # json_list = json.dumps(post_list)
         
         #If the user clicked the random button, randomize the posts
-        if randomOrderOfPosts:
+        if self.randomOrderOfPosts:
             post_list = random.shuffle(post_list)
 
         #[::-1] reverses the list
@@ -164,9 +164,9 @@ class ManagePostService:
     #Radomizes posts for the PP3 Creativity - call only when user hits radomize button
     def randomizePosts(self):
         #Determine if the list should be randomized or unrandomized
-        randomOrderOfPosts = not randomOrderOfPosts
+        self.randomOrderOfPosts = not self.randomOrderOfPosts
         post_list = self.listPosts()
 
-        if randomOrderOfPosts:
+        if self.randomOrderOfPosts:
             post_list = random.shuffle(post_list)
         return post_list
