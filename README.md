@@ -25,7 +25,7 @@ The likes are updated by web sockets
 6. Click the Randomize Posts button again on the first window. Verify the posts are no longer randomized and back to how they were originally.
 7. Randomize the posts on the second window
 8. Create a new post on the first window.
-9.     Refresh both browsers
+    a. Refresh both browsers
     b. Ensure that the post appeared in the second window but in a random order
     c. Ensure that the post appeared in the first window at the top (in the normal order)
 10. Give Group an AO
