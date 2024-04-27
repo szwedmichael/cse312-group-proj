@@ -3,6 +3,7 @@ import hashlib
 import html
 import uuid
 import magic
+import random
 import json
 from fastapi import HTTPException, Depends, UploadFile
 from app.core.database import MongoDataBase
@@ -151,6 +152,11 @@ class ManagePostService:
             post_list.append(info)
 
         # json_list = json.dumps(post_list)
+        #[::-1] reverses the list
         return post_list[::-1]
     
-    def randomizePosts(self)
+    #Radomizes posts for the PP3 Creativity
+    def randomizePosts(self):
+        post_list = self.listPosts()
+        randomized_list = random.shuffle(post_list)
+        return randomized_list
