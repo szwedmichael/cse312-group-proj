@@ -16,6 +16,7 @@ def getMime(fileBytes):
     mimeType = newMime.from_buffer(fileBytes)
     return mimeType
 
+randomOrderOfPosts = False
 
 class ManagePostService:
 
@@ -152,11 +153,20 @@ class ManagePostService:
             post_list.append(info)
 
         # json_list = json.dumps(post_list)
+        
+        #If the user clicked the random button, randomize the posts
+        if randomOrderOfPosts:
+            post_list = random.shuffle(post_list)
+
         #[::-1] reverses the list
         return post_list[::-1]
     
-    #Radomizes posts for the PP3 Creativity
+    #Radomizes posts for the PP3 Creativity - call only when user hits radomize button
     def randomizePosts(self):
+        #Determine if the list should be randomized or unrandomized
+        randomOrderOfPosts = not randomOrderOfPosts
         post_list = self.listPosts()
-        randomized_list = random.shuffle(post_list)
-        return randomized_list
+
+        if randomOrderOfPosts:
+            post_list = random.shuffle(post_list)
+        return post_list
