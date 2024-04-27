@@ -152,3 +152,5 @@ class ManagePostService:
 
         # json_list = json.dumps(post_list)
         return post_list[::-1]
+    
+    def randomizePosts(self)
