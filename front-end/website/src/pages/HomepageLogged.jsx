@@ -231,6 +231,10 @@ function HomepageLogged() {
                       <textarea name="description" value={newPost.description} onChange={postReset} placeholder="Post description" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700" rows="5" cols="" ></textarea>
                     </div>
                     <div className="md:col-span-2">
+                      <label htmlFor="scheduledTime" className="float-left block font-normal text-gray-400 text-lg">Schedule Post Time</label>
+                      <input type="datetime-local" name="scheduledTime" value={newPost.scheduledTime} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700"></input>
+                    </div>
+                    <div className="md:col-span-2">
                       <button className="py-3 text-base font-medium rounded text-white bg-blue-800 w-full hover:bg-blue-700 transition duration-300">Post</button>
                     </div>
                   </div>
@@ -283,4 +287,3 @@ function HomepageLogged() {
   }
 
 export default HomepageLogged;
-
