@@ -28,6 +28,7 @@ function HomepageLogged() {
     description: "",
     date: "",
     file: null,
+    scheduledTime: ""  // New state to hold the scheduled time
   });
 
   // get request for posts
@@ -177,6 +178,7 @@ function HomepageLogged() {
     formData.append("location", newPost.location);
     formData.append("description", newPost.description);
     formData.append("date", newPost.date);
+    formData.append("scheduledTime", newPost.scheduledTime);  // Send the scheduledTime to the server
     if (newPost.file) {
       formData.append("file", newPost.file);
     }
@@ -197,6 +199,7 @@ function HomepageLogged() {
       console.error("Error creating post:", error);
     }
   };
+  
 
   // posts format { id: 1, username: "yolo12", content: { location: 'Buffalo, NY', description: 'I love it here!!!!', date: '03/2024' }, likes: 12 },
   return (
@@ -280,3 +283,4 @@ function HomepageLogged() {
   }
 
 export default HomepageLogged;
+
