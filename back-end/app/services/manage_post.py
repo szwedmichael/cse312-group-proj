@@ -4,6 +4,7 @@ import html
 import uuid
 import magic
 import json
+import datetime
 from fastapi import HTTPException, Depends, UploadFile
 from app.core.database import MongoDataBase
 
@@ -43,7 +44,10 @@ class ManagePostService:
         description = html.escape(body.description)
         # Might have to not do this if it is parsed as a datetime and not string
         date = html.escape(body.date)
-
+        if ("hour" in body) and ("minute" in body):
+            time=datetime.time(body.hour, body.minute)
+        else:
+            time=datetime.datetime.now()
         # If there's no file, obtain the noUpload.jpg
         mimeType = "text/plain"
         if file == None:
@@ -65,7 +69,8 @@ class ManagePostService:
             "content": {"location": location, "description": description, "date": date},
             "likes": 0,
             "file_path" : file_path,
-            "mimeType" : mimeType
+            "mimeType" : mimeType,
+            "time_stamp":time
         }
         
         self.post_collection.insert_one(content)
@@ -143,12 +148,15 @@ class ManagePostService:
 
         for post in all_post:
             info = {}
-            info["username"] = post["username"]
-            info["id"] = post["id"]
-            info["content"] = post["content"]
-            info["likes"] = post["likes"]
-            info["file"]= post["file_path"]
-            post_list.append(info)
+            post_time=info["time"]
+            current_time=datetime.datetime.now()
+            if post_time < current_time:
+                info["username"] = post["username"]
+                info["id"] = post["id"]
+                info["content"] = post["content"]
+                info["likes"] = post["likes"]
+                info["file"]= post["file_path"]
+                post_list.append(info)
 
         # json_list = json.dumps(post_list)
         return post_list[::-1]
