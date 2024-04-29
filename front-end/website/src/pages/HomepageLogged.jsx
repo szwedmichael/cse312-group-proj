@@ -32,6 +32,7 @@ function HomepageLogged() {
     description: "",
     date: "",
     file: null,
+    scheduledTime: ""  // New state to hold the scheduled time
   });
 
   // get request for posts
@@ -195,6 +196,7 @@ function HomepageLogged() {
     formData.append("location", newPost.location);
     formData.append("description", newPost.description);
     formData.append("date", newPost.date);
+    formData.append("scheduledTime", newPost.scheduledTime);  // Send the scheduledTime to the server
     if (newPost.file) {
       formData.append("file", newPost.file);
     }
@@ -215,6 +217,7 @@ function HomepageLogged() {
       console.error("Error creating post:", error);
     }
   };
+  
 
   // posts format { id: 1, username: "yolo12", content: { location: 'Buffalo, NY', description: 'I love it here!!!!', date: '03/2024' }, likes: 12 },
   return (
@@ -244,6 +247,10 @@ function HomepageLogged() {
                     </div>
                     <div className="md:col-span-2">
                       <textarea name="description" maxLength="150" value={newPost.description} onChange={postReset} placeholder="Post description" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700" rows="5" cols="" ></textarea>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label htmlFor="scheduledTime" className="float-left block font-normal text-gray-400 text-lg">Schedule Post Time</label>
+                      <input type="datetime-local" name="scheduledTime" value={newPost.scheduledTime} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700"></input>
                     </div>
                     <div className="md:col-span-2">
                       <button className="py-3 text-base font-medium rounded text-white bg-blue-800 w-full hover:bg-blue-700 transition duration-300">Post</button>
