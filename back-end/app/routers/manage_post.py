@@ -56,6 +56,13 @@ async def all_posts(
     response.headers["X-Content-Type-Options"] = "nosniff"
     return manage_post_service.listPosts()
 
+@router.get("/random-posts")
+async def random_posts(
+    response: Response, manage_post_service: ManagePostService = Depends()
+):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return manage_post_service.randomizePosts()
+
 # this will store active webSocket connections
 active_websockets: List[WebSocket] = []
 # this will broadcast the message to all active websockets
