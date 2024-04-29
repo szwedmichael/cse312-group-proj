@@ -28,7 +28,8 @@ function HomepageLogged() {
     description: "",
     date: "",
     file: null,
-    scheduledTime: ""  // New state to hold the scheduled time
+    hour: '',  // New state field for hour
+    minute: ''  // New state field for minute
   });
 
   // get request for posts
@@ -178,7 +179,10 @@ function HomepageLogged() {
     formData.append("location", newPost.location);
     formData.append("description", newPost.description);
     formData.append("date", newPost.date);
-    formData.append("scheduledTime", newPost.scheduledTime);  // Send the scheduledTime to the server
+    if (newPost.hour && newPost.minute) { // Check if hour and minute are provided
+      formData.append("hour", newPost.hour);
+      formData.append("minute", newPost.minute);
+    }
     if (newPost.file) {
       formData.append("file", newPost.file);
     }
@@ -230,9 +234,31 @@ function HomepageLogged() {
                     <div className="md:col-span-2">
                       <textarea name="description" value={newPost.description} onChange={postReset} placeholder="Post description" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700" rows="5" cols="" ></textarea>
                     </div>
-                    <div className="md:col-span-2">
-                      <label htmlFor="scheduledTime" className="float-left block font-normal text-gray-400 text-lg">Schedule Post Time</label>
-                      <input type="datetime-local" name="scheduledTime" value={newPost.scheduledTime} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700"></input>
+                    <div className="md:col-span-1">
+                      <label htmlFor="hour" className="float-left block font-normal text-gray-400 text-lg">Scheduled Hour</label>
+                      <input
+                        type="number"
+                        name="hour"
+                        placeholder="Hour (0-23)"
+                        min="0"
+                        max="23"
+                        value={newPost.hour}
+                        onChange={postReset}
+                        className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700"
+                      />
+                    </div>
+                    <div className="md:col-span-1">
+                      <label htmlFor="minute" className="float-left block font-normal text-gray-400 text-lg">Scheduled Minute</label>
+                      <input
+                        type="number"
+                        name="minute"
+                        placeholder="Minute (0-59)"
+                        min="0"
+                        max="59"
+                        value={newPost.minute}
+                        onChange={postReset}
+                        className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700"
+                      />
                     </div>
                     <div className="md:col-span-2">
                       <button className="py-3 text-base font-medium rounded text-white bg-blue-800 w-full hover:bg-blue-700 transition duration-300">Post</button>
