@@ -236,31 +236,25 @@ function HomepageLogged() {
                     <div className="md:col-span-2">
                       <textarea name="description" value={newPost.description} onChange={postReset} placeholder="Post description" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700" rows="5" cols="" ></textarea>
                     </div>
-                    <div className="md:col-span-1">
-                      <label htmlFor="hour" className="float-left block font-normal text-gray-400 text-lg">Scheduled Hour</label>
-                      <input
-                        type="number"
-                        name="hour"
-                        placeholder="Hour (0-23)"
-                        min="0"
-                        max="23"
-                        value={newPost.hour}
-                        onChange={postReset}
-                        className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700"
-                      />
+                    <div>
+                      <label htmlFor="day" className="float-left block font-normal text-gray-400 text-lg">Day</label>
+                      <input type="number" name="day" placeholder="Day (1-31)" min="1" max="31" value={newPost.day} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700" />
                     </div>
-                    <div className="md:col-span-1">
-                      <label htmlFor="minute" className="float-left block font-normal text-gray-400 text-lg">Scheduled Minute</label>
-                      <input
-                        type="number"
-                        name="minute"
-                        placeholder="Minute (0-59)"
-                        min="0"
-                        max="59"
-                        value={newPost.minute}
-                        onChange={postReset}
-                        className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700"
-                      />
+                    <div>
+                      <label htmlFor="month" className="float-left block font-normal text-gray-400 text-lg">Month</label>
+                      <input type="number" name="month" placeholder="Month (1-12)" min="1" max="12" value={newPost.month} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700" />
+                    </div>
+                    <div>
+                      <label htmlFor="year" className="float-left block font-normal text-gray-400 text-lg">Year</label>
+                      <input type="number" name="year" placeholder="Year (e.g., 2024)" value={newPost.year} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700" />
+                    </div>
+                    <div>
+                      <label htmlFor="hour" className="float-left block font-normal text-gray-400 text-lg">Hour</label>
+                      <input type="number" name="hour" placeholder="Hour (0-23)" min="0" max="23" value={newPost.hour} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700" />
+                    </div>
+                    <div>
+                      <label htmlFor="minute" className="float-left block font-normal text-gray-400 text-lg">Minute</label>
+                      <input type="number" name="minute" placeholder="Minute (0-59)" min="0" max="59" value={newPost.minute} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700" />
                     </div>
                     <div className="md:col-span-2">
                       <button className="py-3 text-base font-medium rounded text-white bg-blue-800 w-full hover:bg-blue-700 transition duration-300">Post</button>
@@ -315,3 +309,8 @@ function HomepageLogged() {
   }
 
 export default HomepageLogged;
+
+
+
+
+
