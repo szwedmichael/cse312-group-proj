@@ -9,11 +9,12 @@ import datetime
 from fastapi import HTTPException, Depends, UploadFile
 from app.core.database import MongoDataBase
 
-#Gets the mimeType of a file based on fileBytes
+
+# Gets the mimeType of a file based on fileBytes
 def getMime(fileBytes):
-    #Create an instance of Magic
+    # Create an instance of Magic
     newMime = magic.Magic(mimeType=True)
-    #Obtain mimeType from the fileBytes
+    # Obtain mimeType from the fileBytes
     mimeType = newMime.from_buffer(fileBytes)
     return mimeType
 
@@ -46,27 +47,26 @@ class ManagePostService:
         description = html.escape(body.description)
         # Might have to not do this if it is parsed as a datetime and not string
         date = html.escape(body.date)
-        
-        if len(location) == 22 or len(date) == 9 or len(description) == 152:
-            raise HTTPException(status_code=403, detail="Nice try")
-        if ("hour" in body) and ("minute" in body):
-            time=datetime.time(body.hour, body.minute)
-        else:
-            time=datetime.datetime.now().time()
+
+        # if len(location) == 22 or len(date) == 9 or len(description) == 152:
+        #     raise HTTPException(status_code=403, detail="Nice try")
+        # if ("hour" in body) and ("minute" in body):
+        #     time=datetime.time(body.hour, body.minute)
+        # else:
+        #     time=datetime.datetime.now().time()
         # If there's no file, obtain the noUpload.jpg
         mimeType = "text/plain"
         if file == None:
             mimeType == "image/jpeg"
-            file_path="app/static/images/noUpload.jpg"
+            file_path = "app/static/images/noUpload.jpg"
 
         # If there is a file, get the mimeType and write the file
         else:
-            file_path=f"app/static/images/{post_id}.jpg"
+            file_path = f"app/static/images/{post_id}.jpg"
             with open(file_path, "wb") as f:
-                contents = file.file.read()  
-                f.write(contents)  
-            file.file.close()  
-
+                contents = file.file.read()
+                f.write(contents)
+            file.file.close()
 
         # Insert content into database
         content = {
@@ -74,11 +74,11 @@ class ManagePostService:
             "id": post_id,
             "content": {"location": location, "description": description, "date": date},
             "likes": 0,
-            "file_path" : file_path,
-            "mimeType" : mimeType,
-            "time_stamp":time
+            "file_path": file_path,
+            "mimeType": mimeType,
+            # "time_stamp":time
         }
-        
+
         self.post_collection.insert_one(content)
         del content["_id"]
         return content
@@ -154,28 +154,28 @@ class ManagePostService:
 
         for post in all_post:
             info = {}
-            post_time=info["time_stamp"]
-            current_time=datetime.datetime.now()
-            if post_time < current_time:
-                info["username"] = post["username"]
-                info["id"] = post["id"]
-                info["content"] = post["content"]
-                info["likes"] = post["likes"]
-                info["file"]= post["file_path"]
-                post_list.append(info)
+            # post_time=info["time_stamp"]
+            # current_time=datetime.datetime.now()
+            # if post_time < current_time:
+            info["username"] = post["username"]
+            info["id"] = post["id"]
+            info["content"] = post["content"]
+            info["likes"] = post["likes"]
+            info["file"] = post["file_path"]
+            post_list.append(info)
 
         # json_list = json.dumps(post_list)
-        
-        #If the user clicked the random button, randomize the posts
+
+        # If the user clicked the random button, randomize the posts
         if self.randomOrderOfPosts:
             random.shuffle(post_list)
 
-        #[::-1] reverses the list
+        # [::-1] reverses the list
         return post_list[::-1]
-    
-    #Radomizes posts for the PP3 Creativity - call only when user hits radomize button
+
+    # Radomizes posts for the PP3 Creativity - call only when user hits radomize button
     def randomizePosts(self):
-        #Determine if the list should be randomized or unrandomized
+        # Determine if the list should be randomized or unrandomized
         self.randomOrderOfPosts = not self.randomOrderOfPosts
         post_list = self.listPosts()
 
