@@ -26,10 +26,12 @@ function HomepageLogged() {
   const [newPost, setNewPost] = useState({
     location: "",
     description: "",
-    date: "",
-    file: null,
-    hour: '',  // New state field for hour
-    minute: ''  // New state field for minute
+    day: '',      // New field for day
+    month: '',    // New field for month
+    year: '',     // New field for year
+    hour: '',     // Existing field for hour
+    minute: '',   // Existing field for minute
+    file: null
   });
 
   // get request for posts
@@ -178,11 +180,11 @@ function HomepageLogged() {
     const formData = new FormData();
     formData.append("location", newPost.location);
     formData.append("description", newPost.description);
-    formData.append("date", newPost.date);
-    if (newPost.hour && newPost.minute) { // Check if hour and minute are provided
-      formData.append("hour", newPost.hour);
-      formData.append("minute", newPost.minute);
-    }
+    formData.append("day", newPost.day);
+    formData.append("month", newPost.month);
+    formData.append("year", newPost.year);
+    formData.append("hour", newPost.hour);
+    formData.append("minute", newPost.minute);
     if (newPost.file) {
       formData.append("file", newPost.file);
     }
