@@ -46,6 +46,9 @@ class ManagePostService:
         description = html.escape(body.description)
         # Might have to not do this if it is parsed as a datetime and not string
         date = html.escape(body.date)
+        
+        if len(location) == 22 or len(date) == 9 or len(description) == 152:
+            raise HTTPException(status_code=403, detail="Nice try")
         if ("hour" in body) and ("minute" in body):
             time=datetime.time(body.hour, body.minute)
         else:
@@ -63,6 +66,7 @@ class ManagePostService:
                 contents = file.file.read()  
                 f.write(contents)  
             file.file.close()  
+
 
         # Insert content into database
         content = {
@@ -164,7 +168,7 @@ class ManagePostService:
         
         #If the user clicked the random button, randomize the posts
         if self.randomOrderOfPosts:
-            post_list = random.shuffle(post_list)
+            random.shuffle(post_list)
 
         #[::-1] reverses the list
         return post_list[::-1]
@@ -176,5 +180,5 @@ class ManagePostService:
         post_list = self.listPosts()
 
         if self.randomOrderOfPosts:
-            post_list = random.shuffle(post_list)
+            random.shuffle(post_list)
         return post_list

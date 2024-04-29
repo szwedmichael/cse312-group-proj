@@ -20,7 +20,11 @@ function HomepageLogged() {
   const [userName, setUserName] = useState("");
 
   // some mock posts
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([
+    // { id: 1, username: "yolo12", content: { location: 'Buffalo, NY', description: 'I love it here!!!!', date: '03/2024' }, likes: 12 },
+    // { id: 2, username: "ohboy", content: { location: 'New York, NY', description: 'Boston is better ;)', date: '03/2024' }, likes: 20 },
+    // { id: 3, username: "sofun", content: { location: 'Los Angeles, Califona', description: 'YOYOYOYOYOYOYOYOYOYOYOYOYOYO\nYOYOYOYOYOYOYOYOYOYOYOYOYOYO\nYOYOYOYOYOYOYOYOYOYOYOYOYOYO\nYOYOYOYOYOYOYOYOYOYOYOYOYOYO\nYOYOYOYOYOYOYOYOYOYOYOYOYOYO\n', date: '03/2024' }, likes: 5 },
+  ]);
   
   // new post
   const [newPost, setNewPost] = useState({
@@ -39,6 +43,17 @@ function HomepageLogged() {
       }
     } catch (error) {
       console.error("Error fetching posts:", error);
+    }
+  };
+  // get random posts
+  const fetchRandomPosts = async () => {
+    try {
+      const response = await api.get("/random-posts", { withCredentials: true });
+      if (response.status === 200) {
+        setPosts(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching random posts:", error);
     }
   };
   // get request for username
@@ -67,7 +82,10 @@ function HomepageLogged() {
     let websocket;
     // start a websocket and handle incoming messages
     const connectWebSocket = () => {
+      // main
       websocket = new WebSocket(`wss://vacationhub.live/ws-posts`);
+      // testing
+      // websocket = new WebSocket(`ws://localhost:8080/ws-posts`);
       websocket.onopen = () => {
         console.log("WebSocket Connected");
         setWs(websocket); // Update the WebSocket reference
@@ -214,18 +232,18 @@ function HomepageLogged() {
                   <div className="grid md:grid-cols-2 grid-cols-1 gap-6">
                     <div>
                       <label htmlFor="subject" className="float-left block  font-normal text-gray-400 text-lg">Location</label>
-                      <input type="text" name="location" placeholder="Location" value={newPost.location} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700 "></input>  
+                      <input type="text" maxLength="20" name="location" placeholder="Location" value={newPost.location} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700 "></input>  
                     </div>
                     <div>
                       <label htmlFor="subject" className="float-left block  font-normal text-gray-400 text-lg">Date</label>
-                      <input type="text" name="date" placeholder="MM/YYYY"  value={newPost.date} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700"></input>                                                                          
+                      <input type="text" maxLength="7" name="date" placeholder="MM/YYYY"  value={newPost.date} onChange={postReset} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700"></input>                                                                          
                     </div>
                     <div className="md:col-span-2">
                       <label htmlFor="subject" className="float-left block  font-normal text-gray-400 text-lg">Upload an image &#128513;</label>
                       <input type="file" id="file" name="file" placeholder="Upload an image" accept=".jpg, .png" onChange={postReset} className="peer block w-full appearance-none border-none   bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"></input>
                     </div>
                     <div className="md:col-span-2">
-                      <textarea name="description" value={newPost.description} onChange={postReset} placeholder="Post description" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700" rows="5" cols="" ></textarea>
+                      <textarea name="description" maxLength="150" value={newPost.description} onChange={postReset} placeholder="Post description" className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-700" rows="5" cols="" ></textarea>
                     </div>
                     <div className="md:col-span-2">
                       <button className="py-3 text-base font-medium rounded text-white bg-blue-800 w-full hover:bg-blue-700 transition duration-300">Post</button>
@@ -235,6 +253,9 @@ function HomepageLogged() {
             </div>
           </div>
         )}
+      </div>
+      <div className="homepage-random-posts">
+        <button className="btn mb-4" onClick={fetchRandomPosts}>Randomize Posts</button>
       </div>
       <h1 className="mb-4 text-4xl leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Posts</h1>
       <div className="homepage-all-posts">
