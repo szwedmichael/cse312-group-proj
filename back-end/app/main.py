@@ -12,7 +12,7 @@ from slowapi.errors import RateLimitExceeded
 app = FastAPI()
 
 
-limiter = Limiter(key_func=get_remote_address, default_limits=["50/10seconds"])
+limiter = Limiter(key_func=get_remote_address, application_limits=["50/10seconds"])
 app.state.limiter = limiter
 
 
@@ -22,13 +22,6 @@ async def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded)
         status_code=429,
         content={"message": f"Too many requests"},
     )
-
-
-@app.middleware("http")
-@limiter.limit("50/10seconds")  # 50 / 10 seconds
-async def add_process_time_header(request: Request, call_next):
-    response = await call_next(request)
-    return response
 
 
 # https://stackoverflow.com/questions/62928450/how-to-put-backend-and-frontend-together-returning-react-frontend-from-fastapi
