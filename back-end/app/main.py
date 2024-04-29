@@ -19,13 +19,6 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SlowAPIMiddleware)
 
-# @app.exception_handler(RateLimitExceeded)
-# async def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
-#     return JSONResponse(
-#         status_code=429,
-#         content={"message": f"Too many requests"},
-#     )
-
 
 # https://stackoverflow.com/questions/62928450/how-to-put-backend-and-frontend-together-returning-react-frontend-from-fastapi
 # Sets the templates directory to the `build` folder from `npm run build`
