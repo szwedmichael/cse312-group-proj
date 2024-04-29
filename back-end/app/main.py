@@ -10,9 +10,15 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
 
-limiter = Limiter(key_func=get_remote_address)
+limiter = Limiter(key_func=get_remote_address, default_limits=["50/10seconds"])
 app = FastAPI()
 app.state.limiter = limiter
+
+
+async def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
+    return Response(content="Too Many Requests", status_code=429)
+
+
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
