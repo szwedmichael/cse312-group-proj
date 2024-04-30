@@ -26,6 +26,7 @@ function HomepageLogged() {
   const [newPost, setNewPost] = useState({
     location: "",
     description: "",
+    date: "",
     day: '',      // New field for day
     month: '',    // New field for month
     year: '',     // New field for year
@@ -180,6 +181,7 @@ function HomepageLogged() {
     const formData = new FormData();
     formData.append("location", newPost.location);
     formData.append("description", newPost.description);
+    formData.append("date", newPost.date);
     formData.append("day", newPost.day);
     formData.append("month", newPost.month);
     formData.append("year", newPost.year);
