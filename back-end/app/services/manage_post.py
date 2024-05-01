@@ -149,7 +149,7 @@ class ManagePostService:
         for post in all_post:
             info = {}
             post_time=info["time_stamp"]
-            current_time=datetime.datetime.now()
+            current_time=datetime.datetime.now().time()
             if post_time < current_time:
                 info["username"] = post["username"]
                 info["id"] = post["id"]
