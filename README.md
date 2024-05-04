@@ -14,18 +14,18 @@ https://vacationhub.live/
 
 The likes are updated by web sockets
 
-## Extra Feature Testing Procedure
+## Extra Feature Testing Procedure - Randomize Posts
 
 1. Navigate to https://vacationhub.live/
-2. Sign up and log in to two different account on two different windows/browsers
+2. Sign up and log in to two different account on two different windows/browsers.
 3. Take note of the order of posts
-    a. If there are no posts, quickly make at least 3 posts from either user
+    a. If there are no posts, quickly make at least 3 posts, at least one from each user
 4. Click the Randomize Posts button on the first window. Verify the posts were randomized
 5. Refresh the page on the second window. Verify the posts are not randomized, and are still in the same order as before.
-6. Click the Randomize Posts button again on the first window. Verify the posts are no longer randomized and back to how they were originally.
+6. Click the Randomize Posts button again on the first window. Verify the posts are randomized differently than before. Keep clicking this randomize and ensure that no pattern appears between the display of various posts (easier to prove the more posts there are)
 7. Randomize the posts on the second window
-8. Create a new post on the first window.
-    a. Refresh both browsers
-    b. Ensure that the post appeared in the second window but in a random order
-    c. Ensure that the post appeared in the first window at the top (in the normal order)
-10. Give Group an AO
+8. Create a new post on the second window (a file upload is not required)
+9. Verify the new post appears at the top of the page on the second window not randomized
+10. Click the randomize posts button on the first window without refreshing, and ensure that the new post from the second window appears somewhere in the list (could happen to be at the top, but ensure the posts still appear randomized)
+11. Refresh both browsers, and ensure the original order is displayed with the addition of the new post during the testing at the top
+12. Give Group an AO
