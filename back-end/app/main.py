@@ -5,18 +5,45 @@ from .routers import user_auth, manage_post, homepage
 from fastapi.templating import Jinja2Templates
 from fastapi.requests import Request
 from fastapi.responses import FileResponse, JSONResponse
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
-
+from datetime import datetime, timedelta
 
 app = FastAPI()
 
-
 limiter = Limiter(key_func=get_remote_address, default_limits=["50/10seconds"])
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+blocked_ips = {}
+
+
+@app.exception_handler(RateLimitExceeded)
+async def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
+    ip = get_remote_address(request)
+    blocked_ips[ip] = datetime.now()
+    return JSONResponse(
+        status_code=429,
+        content={"message": f"Too many requests"},
+    )
+
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    ip = get_remote_address(request)
+    if ip in blocked_ips:
+        time_blocked = blocked_ips[ip]
+        if datetime.now() - time_blocked < timedelta(seconds=30):
+            return JSONResponse(
+                status_code=429,
+                content={"message": f"Too many requests"},
+            )
+        else:
+            del blocked_ips[ip]
+    response = await call_next(request)
+    return response
+
+
 app.add_middleware(SlowAPIMiddleware)
 
 
