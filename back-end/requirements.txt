@@ -6,4 +6,3 @@ jinja2
 python-multipart
 python-magic
 slowapi
-pytz
