@@ -15,11 +15,16 @@ async def add_post(
     location: str = Form(...),
     description: str = Form(...),
     date: str = Form(...),
+    day: int = Form(...),
+    month: int = Form(...),
+    year: int = Form(...),
+    minute: int = Form(...),
+    hour: int = Form(...),
     file: Union[UploadFile, None] = None,
     manage_post_service: ManagePostService = Depends(),
     auth_token: Union[str, None] = Cookie(None),
 ):
-    add_post_info = PostModel(location=location, description=description, date=date)
+    add_post_info = PostModel(location=location, description=description, date=date, day=day, month = month, year=year, minute=minute, hour=hour)
     response.headers["X-Content-Type-Options"] = "nosniff"
     return manage_post_service.addPost(add_post_info, file, auth_token)
 
