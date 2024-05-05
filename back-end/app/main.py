@@ -16,15 +16,31 @@ app = FastAPI()
 limiter = Limiter(key_func=get_remote_address, default_limits=["50/10seconds"])
 app.state.limiter = limiter
 blocked_ips = {}
-
+timeout_duration = timedelta(seconds=30)
 
 @app.exception_handler(RateLimitExceeded)
 async def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     ip = get_remote_address(request)
+
+    # Check if the ip is blocked
+    if ip in blocked_ips:        
+        elapsedTime = datetime.now() - blocked_ips[ip]
+
+        # Continue to timeout user within 30 seconds
+        if elapsedTime < timeout_duration:
+            return JSONResponse(
+                status_code=429,
+                content={"message": f"You have been timed out! Try again after 30 seconds"},
+            )
+                
+        # If the 30 seconds has passed, remove them from list of blocked IPs
+        else:
+            del blocked_ips[ip]
     blocked_ips[ip] = datetime.now()
+
     return JSONResponse(
         status_code=429,
-        content={"message": f"Too many requests"},
+        content={"message": f"Too many requests; you have been timed out!"},
     )
 
 
