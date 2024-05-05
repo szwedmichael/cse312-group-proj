@@ -171,13 +171,11 @@ class ManagePostService:
             info = {}
             try:
                 post_time=post["time_stamp"]
-                print("scheduled post time: ", post_time)
             except:
                 post_time=datetime.datetime.now()
             et_offset = datetime.timedelta(hours=-4)
             utc_current_time=datetime.datetime.now()
             current_time=utc_current_time + et_offset
-            print("current time: ", current_time)
             if post_time <= current_time:
                 info["username"] = post["username"]
                 info["id"] = post["id"]
