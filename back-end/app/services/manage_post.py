@@ -160,9 +160,12 @@ class ManagePostService:
 
         for post in all_post:
             info = {}
-            post_time=info["time_stamp"]
+            try:
+                post_time=info["time_stamp"]
+            except:
+                post_time=datetime.datetime.now()
             current_time=datetime.datetime.now()
-            if post_time < current_time:
+            if post_time <= current_time:
                 info["username"] = post["username"]
                 info["id"] = post["id"]
                 info["content"] = post["content"]
