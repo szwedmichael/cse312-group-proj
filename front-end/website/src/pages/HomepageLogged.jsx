@@ -249,7 +249,7 @@ function HomepageLogged() {
       setNewPost({ location: "", description: "", date: "", file: null });
       setShowForm(false);
       fetchPosts();
-      timeRemaining = createdPost.content.time_remaining;
+      timeRemaining = createdPost.time_remaining;
     } catch (error) {
       console.error("Error creating post:", error);
     }
