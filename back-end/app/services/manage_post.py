@@ -59,6 +59,13 @@ class ManagePostService:
             minute=body.minute
 
             time=datetime.datetime(year, month, day, hour, minute)
+            et_offset = datetime.timedelta(hours=-4)
+            utc_current_time=datetime.datetime.now()
+            current_time=utc_current_time + et_offset
+            if (time > current_time):
+                time_remaining=(time-current_time).total_seconds()
+            else:
+                time_remaining=0
         else:
             time=datetime.datetime.now()
         # If there's no file, obtain the noUpload.jpg
@@ -83,7 +90,8 @@ class ManagePostService:
             "likes": 0,
             "file_path": file_path,
             "mimeType": mimeType,
-            "time_stamp":time
+            "time_stamp":time,
+            "time_remaning": time_remaining
         }
 
         self.post_collection.insert_one(content)
