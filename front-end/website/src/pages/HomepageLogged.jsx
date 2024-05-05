@@ -28,7 +28,7 @@ function CountdownTimer({ initialTimeRemaining }) {
 
     // Clean up the interval on component unmount
     return () => clearInterval(timer);
-  }, []);
+  }, [initialTimeRemaining]);
 
   // Convert seconds into a readable format
   const formatTime = (seconds) => {
@@ -45,6 +45,8 @@ function CountdownTimer({ initialTimeRemaining }) {
 
 function HomepageLogged() {
   const [userName, setUserName] = useState("");
+  const [timeRemaining, setTimeRemaining] = useState(0);
+
 
   // some mock posts
   const [posts, setPosts] = useState([
@@ -220,7 +222,6 @@ function HomepageLogged() {
       setNewPost({ ...newPost, [name]: value });
     }
   };
-  let timeRemaining = "0";
   // post request for posts
   const handlePost = async (event) => {
     event.preventDefault();
@@ -249,27 +250,17 @@ function HomepageLogged() {
       setNewPost({ location: "", description: "", date: "", file: null });
       setShowForm(false);
       fetchPosts();
-      timeRemaining = createdPost.time_remaining;
+      setTimeRemaining(createdPost.time_remaining);
     } catch (error) {
       console.error("Error creating post:", error);
     }
   };
 
-  // parse timer
-  const parseTimeRemaining = (timeStr) => {
-    const seconds = Number(timeStr);
-    return seconds;
-  };
-
-  const timeFromBackend = timeRemaining;
-  // const timeFromBackend = "10000"; // Example time received from the backend
-  const initialTimeRemaining = parseTimeRemaining(timeFromBackend);
-
   // posts format { id: 1, username: "yolo12", content: { location: 'Buffalo, NY', description: 'I love it here!!!!', date: '03/2024' }, likes: 12 },
   return (
     <>
     <div>
-      {timeFromBackend !== "0" && <CountdownTimer initialTimeRemaining={initialTimeRemaining}  />}
+      {timeRemaining > 0 && <CountdownTimer initialTimeRemaining={timeRemaining}  />}
     </div>
     <div className="home-entirepage">
       <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Welcome, {userName}!</h1>
