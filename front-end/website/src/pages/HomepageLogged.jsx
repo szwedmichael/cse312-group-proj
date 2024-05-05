@@ -16,6 +16,33 @@ DONE:
 - post request for posts
 - images for posts
 */
+function CountdownTimer({ initialTimeRemaining }) {
+  // State to keep track of the current time remaining
+  const [timeRemaining, setTimeRemaining] = useState(initialTimeRemaining);
+
+  useEffect(() => {
+    // Set up a timer that decrements the time remaining every second
+    const timer = setInterval(() => {
+      setTimeRemaining((prevTime) => prevTime > 0 ? prevTime - 1 : 0);
+    }, 1000);
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(timer);
+  }, []);
+
+  // Convert seconds into a readable format
+  const formatTime = (seconds) => {
+    return seconds;
+  };
+
+  return (
+    <div>
+      <h1>Latest Scheduled Post Timer</h1>
+      <p>Seconds Remaining: {formatTime(timeRemaining)}</p>
+    </div>
+  );
+}
+
 function HomepageLogged() {
   const [userName, setUserName] = useState("");
 
@@ -193,6 +220,7 @@ function HomepageLogged() {
       setNewPost({ ...newPost, [name]: value });
     }
   };
+  let timeRemaining = "0";
   // post request for posts
   const handlePost = async (event) => {
     event.preventDefault();
@@ -221,14 +249,28 @@ function HomepageLogged() {
       setNewPost({ location: "", description: "", date: "", file: null });
       setShowForm(false);
       fetchPosts();
+      timeRemaining = createdPost.content.time_remaining;
     } catch (error) {
       console.error("Error creating post:", error);
     }
   };
-  
+
+  // parse timer
+  const parseTimeRemaining = (timeStr) => {
+    const seconds = Number(timeStr);
+    return seconds;
+  };
+
+  const timeFromBackend = timeRemaining;
+  // const timeFromBackend = "10000"; // Example time received from the backend
+  const initialTimeRemaining = parseTimeRemaining(timeFromBackend);
 
   // posts format { id: 1, username: "yolo12", content: { location: 'Buffalo, NY', description: 'I love it here!!!!', date: '03/2024' }, likes: 12 },
   return (
+    <>
+    <div>
+      {timeFromBackend !== "0" && <CountdownTimer initialTimeRemaining={initialTimeRemaining}  />}
+    </div>
     <div className="home-entirepage">
       <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Welcome, {userName}!</h1>
       <div className="homepage-logout">
@@ -328,6 +370,7 @@ function HomepageLogged() {
         </ul>
       </div>
     </div>
+    </>
   );
   }
 
