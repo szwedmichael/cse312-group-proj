@@ -5,7 +5,7 @@ from .routers import user_auth, manage_post, homepage
 from fastapi.templating import Jinja2Templates
 from fastapi.requests import Request
 from fastapi.responses import FileResponse, JSONResponse
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import Limiter, 
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
@@ -15,11 +15,11 @@ app = FastAPI()
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["50/10seconds"])
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(RateLimitExceeded)
 blocked_ips = {}
 
 @app.exception_handler(RateLimitExceeded)
-async def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
+async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     print("exception Handler")
     ip = get_remote_address(request)
     blocked_ips[ip] = datetime.now()
