@@ -50,8 +50,9 @@ class ManagePostService:
 
         # if len(location) == 22 or len(date) == 9 or len(description) == 152:
         #     raise HTTPException(status_code=403, detail="Nice try")
-        if ("day" in body) and (body["day"] != ""):
-            day=body.day
+        day=body.day
+        if (day != ""):
+            day=int(body.day)
             month=body.month
             year=body.year
             hour=body.hour
