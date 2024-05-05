@@ -164,9 +164,11 @@ class ManagePostService:
             info = {}
             try:
                 post_time=post["time_stamp"]
+                print("scheduled post time: ", post_time)
             except:
                 post_time=datetime.datetime.now()
             current_time=datetime.datetime.now().astimezone(pytz.timezone('US/Eastern'))
+            print("current time: ", current_time)
             if post_time <= current_time:
                 info["username"] = post["username"]
                 info["id"] = post["id"]
