@@ -162,7 +162,7 @@ class ManagePostService:
         for post in all_post:
             info = {}
             try:
-                post_time=info["time_stamp"]
+                post_time=post["time_stamp"]
             except:
                 post_time=datetime.datetime.now()
             current_time=datetime.datetime.now()
