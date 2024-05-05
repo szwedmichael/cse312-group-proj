@@ -6,6 +6,7 @@ import magic
 import random
 import json
 import datetime
+import math
 from fastapi import HTTPException, Depends, UploadFile
 from app.core.database import MongoDataBase
 
@@ -91,7 +92,7 @@ class ManagePostService:
             "file_path": file_path,
             "mimeType": mimeType,
             "time_stamp":time,
-            "time_remaining": time_remaining
+            "time_remaining": math.floor(time_remaining)
         }
 
         self.post_collection.insert_one(content)
