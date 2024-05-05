@@ -5,7 +5,7 @@ from .routers import user_auth, manage_post, homepage
 from fastapi.templating import Jinja2Templates
 from fastapi.requests import Request
 from fastapi.responses import FileResponse, JSONResponse
-from slowapi import Limiter, 
+from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
