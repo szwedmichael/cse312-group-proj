@@ -19,6 +19,7 @@ blocked_ips = {}
 
 @app.exception_handler(RateLimitExceeded)
 async def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
+    print("exception Handler")
     ip = get_remote_address(request)
     blocked_ips[ip] = datetime.now()
     print(blocked_ips)
@@ -30,6 +31,7 @@ async def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded)
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
+    print("middle ware handler")
     ip = get_remote_address(request)
     if ip in blocked_ips:
         time_blocked = blocked_ips[ip]
