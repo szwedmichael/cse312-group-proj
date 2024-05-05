@@ -50,10 +50,16 @@ class ManagePostService:
 
         # if len(location) == 22 or len(date) == 9 or len(description) == 152:
         #     raise HTTPException(status_code=403, detail="Nice try")
-        # if ("hour" in body) and ("minute" in body):
-        #     time=datetime.time(body.hour, body.minute)
-        # else:
-        #     time=datetime.datetime.now().time()
+        if ("day" in body) and (body["day"] != ""):
+            day=body.day
+            month=body.month
+            year=body.year
+            hour=body.hour
+            minute=body.minute
+
+            time=datetime.datetime(year, month, day, hour, minute)
+        else:
+            time=datetime.datetime.now()
         # If there's no file, obtain the noUpload.jpg
         mimeType = "text/plain"
         if file == None:
@@ -76,7 +82,7 @@ class ManagePostService:
             "likes": 0,
             "file_path": file_path,
             "mimeType": mimeType,
-            # "time_stamp":time
+            "time_stamp":time
         }
 
         self.post_collection.insert_one(content)
@@ -154,15 +160,18 @@ class ManagePostService:
 
         for post in all_post:
             info = {}
-            # post_time=info["time_stamp"]
-            # current_time=datetime.datetime.now()
-            # if post_time < current_time:
-            info["username"] = post["username"]
-            info["id"] = post["id"]
-            info["content"] = post["content"]
-            info["likes"] = post["likes"]
-            info["file"] = post["file_path"]
-            post_list.append(info)
+            try:
+                post_time=info["time_stamp"]
+            except:
+                post_time=datetime.datetime.now()
+            current_time=datetime.datetime.now()
+            if post_time <= current_time:
+                info["username"] = post["username"]
+                info["id"] = post["id"]
+                info["content"] = post["content"]
+                info["likes"] = post["likes"]
+                info["file"] = post["file_path"]
+                post_list.append(info)
 
         # json_list = json.dumps(post_list)
 
