@@ -91,7 +91,7 @@ class ManagePostService:
             "file_path": file_path,
             "mimeType": mimeType,
             "time_stamp":time,
-            "time_remaning": str(time_remaining)
+            "time_remaining": str(time_remaining)
         }
 
         self.post_collection.insert_one(content)
