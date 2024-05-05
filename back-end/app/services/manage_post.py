@@ -6,6 +6,7 @@ import magic
 import random
 import json
 import datetime
+import pytz
 from fastapi import HTTPException, Depends, UploadFile
 from app.core.database import MongoDataBase
 
@@ -166,7 +167,7 @@ class ManagePostService:
                 print("scheduled post time: ", post_time)
             except:
                 post_time=datetime.datetime.now()
-            current_time=datetime.datetime.now()
+            current_time=datetime.datetime.now().astimezone(pytz.timezone('US/Eastern'))
             print("current time: ", current_time)
             if post_time <= current_time:
                 info["username"] = post["username"]
