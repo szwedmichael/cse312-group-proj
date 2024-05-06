@@ -17,10 +17,14 @@ limiter = Limiter(key_func=get_remote_address, default_limits=["50/10seconds"])
 app.state.limiter = limiter
 blocked_ips = {}
 
+
 @app.exception_handler(RateLimitExceeded)
 async def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     ip = get_remote_address(request)
+    print("rate limit exceeded")
+    print("adding to blocked ips", ip)
     blocked_ips[ip] = datetime.now()
+    print(blocked_ips)
     return JSONResponse(
         status_code=429,
         content={"message": f"Too many requests"},
@@ -29,16 +33,21 @@ async def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded)
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
+    print("middleware")
+    print(blocked_ips)
     ip = get_remote_address(request)
+    print(ip)
     if ip in blocked_ips:
         time_blocked = blocked_ips[ip]
         time_difference = datetime.now() - time_blocked
         if time_difference < timedelta(seconds=30):
+            print("blocked under 30")
             return JSONResponse(
                 status_code=429,
                 content={"message": f"Too many requests"},
             )
         else:
+            print("unblocked")
             del blocked_ips[ip]
     response = await call_next(request)
     return response
