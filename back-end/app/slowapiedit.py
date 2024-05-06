@@ -125,19 +125,6 @@ class SlowAPIMiddleware(BaseHTTPMiddleware):
         app: Starlette = request.app
         limiter: Limiter = app.state.limiter
 
-        if not limiter.enabled:
-            return await call_next(request)
-
-        handler = _find_route_handler(app.routes, request.scope)
-        if _should_exempt(limiter, handler):
-            return await call_next(request)
-
-        error_response, should_inject_headers = sync_check_limits(
-            limiter, request, handler, app
-        )
-        if error_response is not None:
-            return error_response
-
         ip = get_remote_address(request)
         print(ip)
         if ip in blocked_ips:
@@ -152,6 +139,19 @@ class SlowAPIMiddleware(BaseHTTPMiddleware):
             else:
                 print("unblocked")
                 del blocked_ips[ip]
+
+        if not limiter.enabled:
+            return await call_next(request)
+
+        handler = _find_route_handler(app.routes, request.scope)
+        if _should_exempt(limiter, handler):
+            return await call_next(request)
+
+        error_response, should_inject_headers = sync_check_limits(
+            limiter, request, handler, app
+        )
+        if error_response is not None:
+            return error_response
 
         response = await call_next(request)
         if should_inject_headers:
