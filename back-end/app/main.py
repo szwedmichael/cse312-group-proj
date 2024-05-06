@@ -54,6 +54,7 @@ async def add_process_time_header(request: Request, call_next):
 
 
 app.add_middleware(SlowAPIMiddleware)
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 # https://stackoverflow.com/questions/62928450/how-to-put-backend-and-frontend-together-returning-react-frontend-from-fastapi
