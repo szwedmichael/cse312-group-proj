@@ -9,6 +9,7 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
+from starlette.exceptions import ExceptionMiddleware
 from datetime import datetime, timedelta
 
 app = FastAPI()
@@ -18,6 +19,7 @@ app.state.limiter = limiter
 blocked_ips = {}
 
 
+@app.exception_handler(RateLimitExceeded)
 async def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     ip = get_remote_address(request)
     print("rate limit exceeded")
@@ -53,7 +55,9 @@ async def add_process_time_header(request: Request, call_next):
 
 
 app.add_middleware(SlowAPIMiddleware)
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(
+    ExceptionMiddleware, handlers=app.exception_handlers
+)  # this is the change
 
 
 # https://stackoverflow.com/questions/62928450/how-to-put-backend-and-frontend-together-returning-react-frontend-from-fastapi
