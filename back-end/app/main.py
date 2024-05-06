@@ -9,55 +9,29 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
-from starlette.exceptions import ExceptionMiddleware
-from datetime import datetime, timedelta
-
-app = FastAPI()
-
-limiter = Limiter(key_func=get_remote_address, default_limits=["50/10seconds"])
-app.state.limiter = limiter
-blocked_ips = {}
 
 
-@app.exception_handler(RateLimitExceeded)
-async def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
-    ip = get_remote_address(request)
-    print("rate limit exceeded")
-    print("adding to blocked ips", ip)
-    blocked_ips[ip] = datetime.now()
-    print(blocked_ips)
-    return JSONResponse(
-        status_code=429,
-        content={"message": f"Too many requests"},
+def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded) -> Response:
+    """
+    Build a simple JSON response that includes the details of the rate limit
+    that was hit. If no limit is hit, the countdown is added to headers.
+    """
+    print("rate limit function called")
+    response = JSONResponse(
+        {"error": f"Rate limit exceeded: {exc.detail}"}, status_code=429
     )
-
-
-@app.middleware("http")
-async def add_process_time_header(request: Request, call_next):
-    print("middleware")
-    print(blocked_ips)
-    ip = get_remote_address(request)
-    print(ip)
-    if ip in blocked_ips:
-        time_blocked = blocked_ips[ip]
-        time_difference = datetime.now() - time_blocked
-        if time_difference < timedelta(seconds=30):
-            print("blocked under 30")
-            return JSONResponse(
-                status_code=429,
-                content={"message": f"Too many requests"},
-            )
-        else:
-            print("unblocked")
-            del blocked_ips[ip]
-    response = await call_next(request)
+    response = request.app.state.limiter._inject_headers(
+        response, request.state.view_rate_limit
+    )
     return response
 
 
+app = FastAPI()
+limiter = Limiter(key_func=get_remote_address, default_limits=["50/10seconds"])
+app.state.limiter = limiter
+blocked_ips = {}
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SlowAPIMiddleware)
-app.add_middleware(
-    ExceptionMiddleware, handlers=app.exception_handlers
-)  # this is the change
 
 
 # https://stackoverflow.com/questions/62928450/how-to-put-backend-and-frontend-together-returning-react-frontend-from-fastapi
