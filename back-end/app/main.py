@@ -8,7 +8,8 @@ from fastapi.responses import FileResponse, JSONResponse
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from slowapi.middleware import SlowAPIMiddleware
+from slowapiedit import SlowAPIMiddleware, blocked_ips
+from datetime import datetime, timedelta
 
 
 def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded) -> Response:
@@ -17,6 +18,9 @@ def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded) -> Re
     that was hit. If no limit is hit, the countdown is added to headers.
     """
     print("rate limit function called")
+    ip = get_remote_address(request)
+    blocked_ips[ip] = datetime.now()
+
     response = JSONResponse(
         {"error": f"Rate limit exceeded: {exc.detail}"}, status_code=429
     )
@@ -29,7 +33,6 @@ def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded) -> Re
 app = FastAPI()
 limiter = Limiter(key_func=get_remote_address, default_limits=["50/10seconds"])
 app.state.limiter = limiter
-blocked_ips = {}
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SlowAPIMiddleware)
 
