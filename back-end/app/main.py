@@ -18,7 +18,6 @@ app.state.limiter = limiter
 blocked_ips = {}
 
 
-@app.exception_handler(RateLimitExceeded)
 async def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     ip = get_remote_address(request)
     print("rate limit exceeded")
