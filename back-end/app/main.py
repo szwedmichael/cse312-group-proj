@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from slowapiedit import SlowAPIMiddleware, blocked_ips
+from .slowapiedit import SlowAPIMiddleware, blocked_ips
 from datetime import datetime, timedelta
 
 
